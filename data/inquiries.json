@@ -1,0 +1,20 @@
+[
+  {
+    "id": "test-inq-1",
+    "name": "Rohan Sharma",
+    "phone": "+91 9811122233",
+    "email": "rohan@example.com",
+    "requirement": "Aluminium Sliding Gate 14x7ft",
+    "message": "Need quotation for Janakpuri villa installation.",
+    "timestamp": "10/27/2026, 5:35:27 PM"
+  },
+  {
+    "id": "test-inq-1",
+    "name": "Rohan Sharma",
+    "phone": "+91 9811122233",
+    "email": "rohan@example.com",
+    "requirement": "Aluminium Sliding Gate 14x7ft",
+    "message": "Need quotation for Janakpuri villa installation.",
+    "timestamp": "10/27/2026, 5:32:21 PM"
+  }
+]

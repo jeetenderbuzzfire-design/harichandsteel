@@ -1,0 +1,26 @@
+{
+  "name": "harichand-steel-redesign",
+  "version": "1.0.0",
+  "description": "Complete, lightweight, and modern website redesign for **Harichand Steel** ([harichandsteel.com](https://harichandsteel.com/)). Converted from heavy WordPress/Elementor into lightning-fast, zero-dependency **HTML5, CSS3, and vanilla JavaScript (ES6+)** with a full-featured **Admin CMS Dashboard** for managing products, blog posts, and customer leads.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeetenderbuzzfire-design/harichandsteel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jeetenderbuzzfire-design/harichandsteel/issues"
+  },
+  "homepage": "https://github.com/jeetenderbuzzfire-design/harichandsteel#readme",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "pg": "^8.23.1"
+  }
+}

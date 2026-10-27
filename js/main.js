@@ -1,16 +1,24 @@
 /**
  * HARICHAND STEEL - Redesign Interactive Logic
  * Pure ES6 JavaScript - Zero dependencies
+ * Integrated with Harichand Steel CMS Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initStickyHeader();
   initMobileNav();
-  initProductFilter();
   initQuoteEstimator();
   initModal();
   initScrollTop();
+
+  // CMS dynamic hydration
+  if (typeof CMS !== 'undefined') {
+    hydrateProductsFromCMS();
+    hydrateNewsFromCMS();
+  } else {
+    initProductFilter();
+  }
 });
 
 /* ==========================================================================
@@ -194,6 +202,16 @@ function initQuoteEstimator() {
     const size = form.querySelector('[name="gate_size"]').value.trim() || 'Standard';
     const city = form.querySelector('[name="city"]').value.trim() || 'Delhi NCR';
 
+    // Log lead to CMS
+    if (typeof CMS !== 'undefined') {
+      CMS.saveInquiry({
+        name: name,
+        phone: phone,
+        requirement: `Quote: ${gateType} (${size})`,
+        message: `Location: ${city}. Size: ${size}. Requested formal quotation and catalogue.`
+      });
+    }
+
     let msg = `*New Website Gate Enquiry - Harichand Steel*%0A%0A`;
     msg += `*Name:* ${encodeURIComponent(name)}%0A`;
     msg += `*Phone:* ${encodeURIComponent(phone)}%0A`;
@@ -220,33 +238,43 @@ function initModal() {
   if (!modal) return;
 
   triggerBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.onclick = (e) => {
       e.preventDefault();
       const productTitle = btn.getAttribute('data-product') || 'Aluminium Profile Gate Solution';
       if (productInput) productInput.value = productTitle;
       modal.classList.add('active');
-    });
+    };
   });
 
   if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
+    closeBtn.onclick = () => {
       modal.classList.remove('active');
-    });
+    };
   }
 
-  modal.addEventListener('click', (e) => {
+  modal.onclick = (e) => {
     if (e.target === modal) {
       modal.classList.remove('active');
     }
-  });
+  };
 
   if (modalForm) {
-    modalForm.addEventListener('submit', (e) => {
+    modalForm.onsubmit = (e) => {
       e.preventDefault();
       const name = modalForm.querySelector('[name="m_name"]').value.trim();
       const phone = modalForm.querySelector('[name="m_phone"]').value.trim();
       const product = modalForm.querySelector('[name="m_product"]').value.trim();
       const note = modalForm.querySelector('[name="m_note"]').value.trim() || 'Interested in price & design options';
+
+      // Log lead to CMS
+      if (typeof CMS !== 'undefined') {
+        CMS.saveInquiry({
+          name: name,
+          phone: phone,
+          requirement: product,
+          message: note
+        });
+      }
 
       let msg = `*Instant Product Enquiry - Harichand Steel*%0A%0A`;
       msg += `*Client Name:* ${encodeURIComponent(name)}%0A`;
@@ -257,7 +285,7 @@ function initModal() {
       const whatsappUrl = `https://wa.me/919870433868?text=${msg}`;
       window.open(whatsappUrl, '_blank');
       modal.classList.remove('active');
-    });
+    };
   }
 }
 
@@ -282,4 +310,95 @@ function initScrollTop() {
       behavior: 'smooth'
     });
   });
+}
+
+/* ==========================================================================
+   CMS HYDRATION - PRODUCTS & BLOGS
+   ========================================================================== */
+function escapeHtmlSafe(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, function (m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+  });
+}
+
+function hydrateProductsFromCMS() {
+  const grid = document.querySelector('.product-cards-grid');
+  if (!grid || typeof CMS === 'undefined') return;
+
+  const products = CMS.getProducts();
+  if (!products || !products.length) return;
+
+  grid.innerHTML = products.map(prod => {
+    const specsHtml = Array.isArray(prod.specs) && prod.specs.length > 0
+      ? prod.specs.map(s => `<span class="spec-pill"><i class="fas fa-shield-alt"></i> ${escapeHtmlSafe(s)}</span>`).join('')
+      : '<span class="spec-pill"><i class="fas fa-check"></i> Standard Spec</span>';
+
+    const badge = prod.badge || 'Premium Build';
+    const safeTitle = escapeHtmlSafe(prod.title);
+    const safeCat = escapeHtmlSafe(prod.category || 'aluminum-profile-gate');
+    const safeCatName = escapeHtmlSafe(prod.categoryName || 'Aluminum Profile Gate');
+    const safeImg = escapeHtmlSafe(prod.image || 'images/prod-1.png');
+    const waText = encodeURIComponent(`Enquiry for ${prod.title}`);
+
+    return `
+      <article class="product-card" data-category="${safeCat}">
+        <div class="product-thumb">
+          <span class="product-badge">${escapeHtmlSafe(badge)}</span>
+          <a href="#${escapeHtmlSafe(prod.id)}">
+            <img src="${safeImg}" alt="${safeTitle}" onerror="this.src='images/prod-1.png'">
+          </a>
+        </div>
+        <div class="product-body">
+          <span class="product-category-link">${safeCatName}</span>
+          <h3 class="product-title"><a href="#${escapeHtmlSafe(prod.id)}">${safeTitle}</a></h3>
+          <div class="product-specs">
+            ${specsHtml}
+          </div>
+          <div class="product-card-ctas">
+            <button type="button" class="btn btn-outline-dark btn-sm trigger-inquiry-modal" data-product="${safeTitle}">View Details</button>
+            <a href="https://wa.me/919870433868?text=${waText}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Enquire</a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Re-bind product filter tabs and modal handlers
+  initProductFilter();
+  initModal();
+}
+
+function hydrateNewsFromCMS() {
+  const grid = document.querySelector('.news-cards-grid');
+  if (!grid || typeof CMS === 'undefined') return;
+
+  const blogs = CMS.getBlogs();
+  if (!blogs || !blogs.length) return;
+
+  grid.innerHTML = blogs.map(blog => {
+    const safeTitle = escapeHtmlSafe(blog.title);
+    const safeTag = escapeHtmlSafe(blog.tag || 'News');
+    const safeDate = escapeHtmlSafe(blog.date || '');
+    const safeExcerpt = escapeHtmlSafe(blog.excerpt || '');
+    const safeSlug = escapeHtmlSafe(blog.slug || 'news.html');
+    const waText = encodeURIComponent(`Enquiry regarding ${blog.title}`);
+
+    return `
+      <article class="news-card">
+        <div class="news-card-body">
+          <div class="news-meta">
+            <span><i class="fas fa-calendar-alt"></i> ${safeDate}</span>
+            <span><i class="fas fa-tag"></i> ${safeTag}</span>
+          </div>
+          <h3 class="news-title"><a href="${safeSlug}">${safeTitle}</a></h3>
+          <p class="news-excerpt">${safeExcerpt}</p>
+          <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+            <a href="${safeSlug}" class="btn btn-outline-dark btn-sm">Read Article &rarr;</a>
+            <a href="https://wa.me/919870433868?text=${waText}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Ask Expert</a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
 }

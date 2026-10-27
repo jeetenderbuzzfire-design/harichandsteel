@@ -146,7 +146,7 @@
               Fill in your details below. We will calculate material requirements and respond with technical specifications and pricing via WhatsApp or phone call.
             </p>
 
-            <form id="contactPageForm" onsubmit="event.preventDefault(); const n = this.name.value; const p = this.phone.value; const e = this.email.value; const m = this.message.value; window.open('https://wa.me/919870433868?text=' + encodeURIComponent('New Contact Form Submission:\nName: ' + n + '\nPhone: ' + p + '\nEmail: ' + e + '\nMessage: ' + m), '_blank');">
+            <form id="contactPageForm" onsubmit="event.preventDefault(); const n = this.name.value; const p = this.phone.value; const e = this.email.value; const m = this.message.value; if (typeof CMS !== 'undefined') { CMS.saveInquiry({ name: n, phone: p, email: e, requirement: 'Contact Page Inquiry', message: m }); } window.open('https://wa.me/919870433868?text=' + encodeURIComponent('New Contact Form Submission:\nName: ' + n + '\nPhone: ' + p + '\nEmail: ' + e + '\nMessage: ' + m), '_blank');">
               <div class="form-group" style="margin-bottom: 18px;">
                 <label for="cName">Your Full Name</label>
                 <input type="text" id="cName" name="name" class="form-control" style="background: #f8fafc; color: #1e293b; border-color: #cbd5e1;" placeholder="Enter your full name" required>
@@ -331,7 +331,7 @@
     <!-- Bottom  Bar -->
     <div class="footer-bottom">
       <div class="container">
-        <p>Copyright &copy; 2026 HARICHAND STEEL. All rights reserved.</p>
+        <p>Copyright &copy; 2026 HARICHAND STEEL. All rights reserved. &bull; <a href="admin/" style="color: rgba(255,255,255,0.45); text-decoration: none;"><i class="fas fa-lock"></i> Admin CMS</a></p>
         <p>Redesigned in pure HTML5, CSS3, & JavaScript | Zero Dependencies</p>
       </div>
     </div>
@@ -394,6 +394,7 @@
     </div>
   </div>
 
+  <script src="js/cms-data.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

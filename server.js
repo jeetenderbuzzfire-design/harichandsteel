@@ -42,7 +42,11 @@ const MIME_TYPES = {
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.txt': 'text/plain; charset=UTF-8',
-  '.xml': 'application/xml; charset=UTF-8'
+  '.xml': 'application/xml; charset=UTF-8',
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.ttf': 'font/ttf',
+  '.eot': 'application/vnd.ms-fontobject'
 };
 
 // Helper to read JSON request body (DOS-01: max 2MB payload safeguard)
@@ -568,7 +572,8 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(` > Products Page:   http://localhost:${PORT}/product`);
   console.log(` > Single Product:  http://localhost:${PORT}/product/aluminium-door-profile-gate`);
   console.log('----------------------------------------------------------------');
-  console.log(' Database Target:   db.uxazybwdglgvmnmjetoy.supabase.co:5432');
+  const dbHost = process.env.DATABASE_URL ? (new URL(process.env.DATABASE_URL.replace(/^postgresql:\/\//i, 'http://')).host || 'Supabase') : 'Local JSON';
+  console.log(` Database Target:   ${dbHost}`);
   console.log('================================================================');
 });
 

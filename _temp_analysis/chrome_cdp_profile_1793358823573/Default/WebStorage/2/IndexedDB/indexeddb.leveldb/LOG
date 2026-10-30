@@ -1,0 +1,6 @@
+2026/10/30-16:43:47.578 57c4 Creating DB C:\Users\Lenovo\.gemini\antigravity\scratch\harichand-steel-redesign\_temp_analysis\chrome_cdp_profile_1793358823573\Default\WebStorage\2\IndexedDB\indexeddb.leveldb since it was missing.
+2026/10/30-16:43:47.921 57c4 Reusing MANIFEST C:\Users\Lenovo\.gemini\antigravity\scratch\harichand-steel-redesign\_temp_analysis\chrome_cdp_profile_1793358823573\Default\WebStorage\2\IndexedDB\indexeddb.leveldb/MANIFEST-000001
+2026/10/30-16:43:48.324 95c Level-0 table #5: started
+2026/10/30-16:43:48.343 95c Level-0 table #5: 3371 bytes OK
+2026/10/30-16:43:48.345 95c Delete type=0 #3
+2026/10/30-16:43:48.463 a44 Manual compaction at level-0 from '\x00\x03\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x04\x00\x00\x00' @ 0 : 0; will stop at (end)

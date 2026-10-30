@@ -70,7 +70,7 @@ async function initDatabase() {
     pool = new Pool({
       connectionString: dbUrl,
       ssl: { rejectUnauthorized: false },
-      connectionTimeoutMillis: 5000
+      connectionTimeoutMillis: 20000
     });
 
     pool.on('error', (err) => {

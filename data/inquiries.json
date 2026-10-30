@@ -1,5 +1,14 @@
 [
   {
+    "name": "Test Customer",
+    "phone": "9876543210",
+    "email": "customer@test.com",
+    "requirement": "Quote: Modern Gate",
+    "message": "Automated test inquiry lead submission",
+    "id": "inq-1793345485184",
+    "timestamp": "30/10/2026, 1:01:25 pm"
+  },
+  {
     "id": "test-inq-1",
     "name": "Rohan Sharma",
     "phone": "+91 9811122233",

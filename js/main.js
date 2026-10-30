@@ -157,33 +157,326 @@ function initMobileNav() {
 }
 
 /* ==========================================================================
-   PRODUCT FILTER TABS
+   PRODUCT FILTER TABS & PAGINATION CONTROLLER
+   - 9 items per page chunking
+   - Full pagination controls: [←] [1] [2] [3] [4] [→] with .active styling
+   - Breadcrumb page status: "Home / Product / Page X" when page > 1
+   - Results counter: "Showing X–Y of Z results"
+   - Clean URL routing: /product/page/:num/ via history.pushState & popstate
    ========================================================================== */
 function initProductFilter() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.product-card');
+  const filterContainers = document.querySelectorAll('.product-filters');
+  const cards = Array.from(document.querySelectorAll('.product-cards-grid .product-card'));
 
-  if (!filterBtns.length || !cards.length) return;
+  if (!filterContainers.length || !cards.length) return;
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  const PAGE_SIZE = 9;
 
-      const filter = btn.getAttribute('data-filter');
+  // Helper: extract page number from clean URL pathname or query parameters
+  function getPageFromUrl() {
+    const path = window.location.pathname || '';
+    const match = path.match(/\/product\/page\/(\d+)\/?/);
+    if (match && match[1]) {
+      const p = parseInt(match[1], 10);
+      if (!isNaN(p) && p >= 1) return p;
+    }
+    const params = new URLSearchParams(window.location.search || '');
+    if (params.has('page')) {
+      const p = parseInt(params.get('page'), 10);
+      if (!isNaN(p) && p >= 1) return p;
+    }
+    return 1;
+  }
 
-      cards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        if (filter === 'all' || cat === filter) {
-          card.style.display = 'flex';
-          setTimeout(() => { card.style.opacity = '1'; }, 20);
-        } else {
-          card.style.display = 'none';
-          card.style.opacity = '0';
-        }
-      });
+  filterContainers.forEach(container => {
+    const filterBtns = container.querySelectorAll('.filter-btn');
+    if (!filterBtns.length) return;
+
+    // Detect if this page has pagination elements (product catalogue)
+    const paginationContainer = document.getElementById('cataloguePagination') ||
+                                document.querySelector('.catalogue-pagination');
+    const paginationList = paginationContainer ? paginationContainer.querySelector('.pagination-list') : null;
+    const breadcrumbNav = document.getElementById('catalogueBreadcrumbs') ||
+                          document.querySelector('.breadcrumb-nav');
+    const countSummary = container.parentElement.querySelector('.product-results-count') ||
+                         document.querySelector('.product-results-count');
+
+    // 1. Calculate live counts for each category
+    const categoryCounts = { all: cards.length };
+    cards.forEach(card => {
+      const cat = card.getAttribute('data-category');
+      if (cat) {
+        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+      }
     });
+
+    // 2. Update filter button text with exact count badges
+    filterBtns.forEach(btn => {
+      const filter = btn.getAttribute('data-filter') || 'all';
+      const count = categoryCounts[filter] || 0;
+
+      let baseLabel = btn.getAttribute('data-label');
+      if (!baseLabel) {
+        baseLabel = btn.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
+        btn.setAttribute('data-label', baseLabel);
+      }
+
+      btn.innerHTML = `${baseLabel} <span class="filter-count">(${count})</span>`;
+    });
+
+    // Current State
+    let currentFilter = 'all';
+    let currentPage = paginationContainer ? getPageFromUrl() : 1;
+
+    // 3. Render Breadcrumbs
+    function renderBreadcrumbs(page) {
+      if (!breadcrumbNav) return;
+      if (page > 1) {
+        breadcrumbNav.innerHTML = `
+          <a href="index.html">Home</a>
+          <span class="sep"><i class="fas fa-chevron-right"></i></span>
+          <a href="product.html">Product</a>
+          <span class="sep"><i class="fas fa-chevron-right"></i></span>
+          <span>Page ${page}</span>
+        `;
+        document.title = `Product - Page ${page} - HARICHAND STEEL`;
+      } else {
+        breadcrumbNav.innerHTML = `
+          <a href="index.html">Home</a>
+          <span class="sep"><i class="fas fa-chevron-right"></i></span>
+          <span>Product</span>
+        `;
+        document.title = 'Product - HARICHAND STEEL';
+      }
+    }
+
+    // 4. Render Pagination UI
+    function renderPaginationUI(totalPages, page) {
+      if (!paginationContainer || !paginationList) return;
+
+      if (totalPages <= 1) {
+        paginationContainer.style.display = 'none';
+        paginationList.innerHTML = '';
+        return;
+      }
+
+      paginationContainer.style.display = 'flex';
+      let html = '';
+
+      // [←] Previous button
+      const isFirst = page <= 1;
+      const prevUrl = page > 2 ? `/product/page/${page - 1}` : '/product';
+      html += `
+        <li class="page-item ${isFirst ? 'disabled' : ''}">
+          <a href="${isFirst ? '#' : prevUrl}" class="page-link" data-page="${page - 1}" aria-label="Previous Page" ${isFirst ? 'tabindex="-1" aria-disabled="true"' : ''}>
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+      `;
+
+      // [1] [2] [3] ... [totalPages] Numbered buttons
+      for (let p = 1; p <= totalPages; p++) {
+        const isActive = p === page;
+        const pageUrl = p === 1 ? '/product' : `/product/page/${p}`;
+        html += `
+          <li class="page-item ${isActive ? 'active' : ''}" ${isActive ? 'aria-current="page"' : ''}>
+            <a href="${pageUrl}" class="page-link" data-page="${p}">${p}</a>
+          </li>
+        `;
+      }
+
+      // [→] Next button
+      const isLast = page >= totalPages;
+      const nextUrl = `/product/page/${page + 1}`;
+      html += `
+        <li class="page-item ${isLast ? 'disabled' : ''}">
+          <a href="${isLast ? '#' : nextUrl}" class="page-link" data-page="${page + 1}" aria-label="Next Page" ${isLast ? 'tabindex="-1" aria-disabled="true"' : ''}>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      `;
+
+      paginationList.innerHTML = html;
+
+      // Attach click listeners to pagination links
+      paginationList.querySelectorAll('.page-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const pageItem = link.closest('.page-item');
+          if (pageItem && (pageItem.classList.contains('disabled') || pageItem.classList.contains('active'))) {
+            return;
+          }
+          const targetPage = parseInt(link.getAttribute('data-page'), 10);
+          if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages && targetPage !== currentPage) {
+            currentPage = targetPage;
+            applyDisplay(true, true); // pushHistory = true, scrollUp = true
+          }
+        });
+      });
+    }
+
+    // 5. Apply Display (Filtering + Pagination Chunking)
+    function applyDisplay(pushHistory = false, scrollUp = false) {
+      // Find matching cards for the selected category
+      const matchingCards = cards.filter(card => {
+        const cat = card.getAttribute('data-category');
+        return currentFilter === 'all' || cat === currentFilter;
+      });
+
+      const totalItems = matchingCards.length;
+
+      if (paginationContainer) {
+        const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
+
+        // Hide all non-matching cards
+        cards.forEach(card => {
+          if (!matchingCards.includes(card)) {
+            card.style.display = 'none';
+            card.style.opacity = '0';
+          }
+        });
+
+        // Show only matching cards within current page slice
+        matchingCards.forEach((card, index) => {
+          if (index >= startIndex && index < endIndex) {
+            card.style.display = 'flex';
+            setTimeout(() => { card.style.opacity = '1'; }, 20);
+          } else {
+            card.style.display = 'none';
+            card.style.opacity = '0';
+          }
+        });
+
+        // Update Results Counter: "Showing X–Y of Z results"
+        if (countSummary) {
+          if (totalItems === 0) {
+            countSummary.innerHTML = 'Showing 0 results';
+          } else {
+            countSummary.innerHTML = `Showing <strong>${startIndex + 1}–${endIndex}</strong> of <strong>${totalItems}</strong> results`;
+          }
+        }
+
+        // Update Breadcrumbs
+        renderBreadcrumbs(currentPage);
+
+        // Update Pagination Controls
+        renderPaginationUI(totalPages, currentPage);
+
+        // Update Clean URL via history.pushState
+        if (pushHistory && window.history && window.history.pushState) {
+          const cleanPath = currentPage > 1 ? `/product/page/${currentPage}` : '/product';
+          const cleanUrl = currentFilter && currentFilter !== 'all' ? `${cleanPath}#${currentFilter}` : cleanPath;
+          try {
+            const currentFullPath = window.location.pathname + window.location.hash;
+            if (currentFullPath !== cleanUrl) {
+              window.history.pushState({ page: currentPage, filter: currentFilter }, '', cleanUrl);
+            }
+          } catch (err) {
+            console.warn('pushState error:', err);
+          }
+        }
+
+        // Smooth scroll to top of catalogue grid
+        if (scrollUp) {
+          const scrollTarget = container.closest('.section') || container;
+          if (scrollTarget) {
+            const topOffset = scrollTarget.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top: Math.max(0, topOffset), behavior: 'smooth' });
+          }
+        }
+      } else {
+        // Fallback for non-paginated views (e.g. homepage)
+        let visibleCount = 0;
+        cards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const matches = (currentFilter === 'all' || cat === currentFilter);
+          if (matches) {
+            visibleCount++;
+            card.style.display = 'flex';
+            setTimeout(() => { card.style.opacity = '1'; }, 20);
+          } else {
+            card.style.display = 'none';
+            card.style.opacity = '0';
+          }
+        });
+
+        if (countSummary) {
+          if (currentFilter === 'all') {
+            countSummary.innerHTML = `Showing all <strong>${visibleCount}</strong> designs in catalogue`;
+          } else {
+            const activeBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === currentFilter);
+            const activeLabel = activeBtn ? (activeBtn.getAttribute('data-label') || activeBtn.textContent) : currentFilter;
+            countSummary.innerHTML = `Showing <strong>${visibleCount}</strong> of <strong>${cards.length}</strong> results in <em>${activeLabel}</em>`;
+          }
+        }
+      }
+    }
+
+    // 6. Category Button Event Listeners
+    filterBtns.forEach(btn => {
+      if (btn._filterListener) {
+        btn.removeEventListener('click', btn._filterListener);
+      }
+      btn._filterListener = (e) => {
+        e.preventDefault();
+        const filter = btn.getAttribute('data-filter') || 'all';
+        currentFilter = filter;
+        currentPage = 1; // Reset to page 1 on filter switch
+
+        filterBtns.forEach(b => b.classList.toggle('active', b === btn));
+        applyDisplay(true, false);
+      };
+      btn.addEventListener('click', btn._filterListener);
+    });
+
+    // 7. Initial Active State Selection
+    const hash = window.location.hash ? window.location.hash.substring(1) : '';
+    let initialBtn = null;
+    if (hash) {
+      initialBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === hash);
+      if (initialBtn) currentFilter = hash;
+    }
+    if (!initialBtn) {
+      initialBtn = container.querySelector('.filter-btn.active') || filterBtns[0];
+      if (initialBtn) currentFilter = initialBtn.getAttribute('data-filter') || 'all';
+    }
+
+    filterBtns.forEach(b => b.classList.toggle('active', b === initialBtn));
+    applyDisplay(false, false);
+
+    // 8. Popstate listener for back/forward navigation
+    if (!window._cataloguePopstateBound && paginationContainer) {
+      window._cataloguePopstateBound = true;
+      window.addEventListener('popstate', (e) => {
+        const statePage = (e.state && typeof e.state.page === 'number') ? e.state.page : getPageFromUrl();
+        const stateFilter = (e.state && e.state.filter) || (window.location.hash ? window.location.hash.substring(1) : 'all');
+
+        currentFilter = stateFilter || 'all';
+        currentPage = statePage;
+
+        filterBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-filter') === currentFilter));
+        applyDisplay(false, false);
+      });
+    }
   });
+
+  // Global hashchange listener so header dropdown links filter dynamically
+  if (!window._catalogueHashListenerBound) {
+    window._catalogueHashListenerBound = true;
+    window.addEventListener('hashchange', () => {
+      const currentHash = window.location.hash ? window.location.hash.substring(1) : '';
+      if (!currentHash) return;
+      const targetBtn = document.querySelector(`.filter-btn[data-filter="${currentHash}"]`);
+      if (targetBtn) {
+        targetBtn.click();
+      }
+    });
+  }
 }
 
 /* ==========================================================================
@@ -196,32 +489,51 @@ function initQuoteEstimator() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const name = form.querySelector('[name="name"]').value.trim();
-    const phone = form.querySelector('[name="phone"]').value.trim();
-    const gateType = form.querySelector('[name="gate_type"]').value;
-    const size = form.querySelector('[name="gate_size"]').value.trim() || 'Standard';
-    const city = form.querySelector('[name="city"]').value.trim() || 'Delhi NCR';
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
 
-    // Log lead to CMS
-    if (typeof CMS !== 'undefined') {
-      CMS.saveInquiry({
-        name: name,
-        phone: phone,
-        requirement: `Quote: ${gateType} (${size})`,
-        message: `Location: ${city}. Size: ${size}. Requested formal quotation and catalogue.`
-      });
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
     }
 
-    let msg = `*New Website Gate Enquiry - Harichand Steel*%0A%0A`;
-    msg += `*Name:* ${encodeURIComponent(name)}%0A`;
-    msg += `*Phone:* ${encodeURIComponent(phone)}%0A`;
-    msg += `*Product Required:* ${encodeURIComponent(gateType)}%0A`;
-    msg += `*Approx Dimension/Size:* ${encodeURIComponent(size)}%0A`;
-    msg += `*Location:* ${encodeURIComponent(city)}%0A%0A`;
-    msg += `Please provide quotation and catalogue.`;
+    try {
+      const name = form.querySelector('[name="name"]').value.trim();
+      const phone = form.querySelector('[name="phone"]').value.trim();
+      const gateType = form.querySelector('[name="gate_type"]').value;
+      const size = form.querySelector('[name="gate_size"]').value.trim() || 'Standard';
+      const city = form.querySelector('[name="city"]').value.trim() || 'Delhi NCR';
 
-    const whatsappUrl = `https://wa.me/919870433868?text=${msg}`;
-    window.open(whatsappUrl, '_blank');
+      // Log lead to CMS
+      if (typeof CMS !== 'undefined') {
+        CMS.saveInquiry({
+          name: name,
+          phone: phone,
+          requirement: `Quote: ${gateType} (${size})`,
+          message: `Location: ${city}. Size: ${size}. Requested formal quotation and catalogue.`
+        });
+      }
+
+      let msg = `*New Website Gate Enquiry - Harichand Steel*%0A%0A`;
+      msg += `*Name:* ${encodeURIComponent(name)}%0A`;
+      msg += `*Phone:* ${encodeURIComponent(phone)}%0A`;
+      msg += `*Product Required:* ${encodeURIComponent(gateType)}%0A`;
+      msg += `*Approx Dimension/Size:* ${encodeURIComponent(size)}%0A`;
+      msg += `*Location:* ${encodeURIComponent(city)}%0A%0A`;
+      msg += `Please provide quotation and catalogue.`;
+
+      const whatsappUrl = `https://wa.me/919870433868?text=${msg}`;
+      window.open(whatsappUrl, '_blank');
+    } catch (err) {
+      console.error('Quote submission error:', err);
+    } finally {
+      setTimeout(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnContent;
+        }
+      }, 1500);
+    }
   });
 }
 
@@ -261,30 +573,50 @@ function initModal() {
   if (modalForm) {
     modalForm.onsubmit = (e) => {
       e.preventDefault();
-      const name = modalForm.querySelector('[name="m_name"]').value.trim();
-      const phone = modalForm.querySelector('[name="m_phone"]').value.trim();
-      const product = modalForm.querySelector('[name="m_product"]').value.trim();
-      const note = modalForm.querySelector('[name="m_note"]').value.trim() || 'Interested in price & design options';
 
-      // Log lead to CMS
-      if (typeof CMS !== 'undefined') {
-        CMS.saveInquiry({
-          name: name,
-          phone: phone,
-          requirement: product,
-          message: note
-        });
+      const submitBtn = modalForm.querySelector('button[type="submit"]');
+      const originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
       }
 
-      let msg = `*Instant Product Enquiry - Harichand Steel*%0A%0A`;
-      msg += `*Client Name:* ${encodeURIComponent(name)}%0A`;
-      msg += `*Phone:* ${encodeURIComponent(phone)}%0A`;
-      msg += `*Selected Product:* ${encodeURIComponent(product)}%0A`;
-      msg += `*Requirements:* ${encodeURIComponent(note)}%0A`;
+      try {
+        const name = modalForm.querySelector('[name="m_name"]').value.trim();
+        const phone = modalForm.querySelector('[name="m_phone"]').value.trim();
+        const product = modalForm.querySelector('[name="m_product"]').value.trim();
+        const note = modalForm.querySelector('[name="m_note"]').value.trim() || 'Interested in price & design options';
 
-      const whatsappUrl = `https://wa.me/919870433868?text=${msg}`;
-      window.open(whatsappUrl, '_blank');
-      modal.classList.remove('active');
+        // Log lead to CMS
+        if (typeof CMS !== 'undefined') {
+          CMS.saveInquiry({
+            name: name,
+            phone: phone,
+            requirement: product,
+            message: note
+          });
+        }
+
+        let msg = `*Instant Product Enquiry - Harichand Steel*%0A%0A`;
+        msg += `*Client Name:* ${encodeURIComponent(name)}%0A`;
+        msg += `*Phone:* ${encodeURIComponent(phone)}%0A`;
+        msg += `*Selected Product:* ${encodeURIComponent(product)}%0A`;
+        msg += `*Requirements:* ${encodeURIComponent(note)}%0A`;
+
+        const whatsappUrl = `https://wa.me/919870433868?text=${msg}`;
+        window.open(whatsappUrl, '_blank');
+        modal.classList.remove('active');
+      } catch (err) {
+        console.error('Modal inquiry submission error:', err);
+      } finally {
+        setTimeout(() => {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnContent;
+          }
+        }, 1500);
+      }
     };
   }
 }
@@ -322,42 +654,48 @@ function escapeHtmlSafe(str) {
   });
 }
 
-function hydrateProductsFromCMS() {
-  const grid = document.querySelector('.product-cards-grid');
-  if (!grid || typeof CMS === 'undefined') return;
-
-  const products = CMS.getProducts();
+function renderProductCards(grid, products) {
   if (!products || !products.length) return;
 
+  function slugify(text) {
+    if (!text) return '';
+    return text.toString().toLowerCase().trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   grid.innerHTML = products.map(prod => {
-    const specsHtml = Array.isArray(prod.specs) && prod.specs.length > 0
-      ? prod.specs.map(s => `<span class="spec-pill"><i class="fas fa-shield-alt"></i> ${escapeHtmlSafe(s)}</span>`).join('')
-      : '<span class="spec-pill"><i class="fas fa-check"></i> Standard Spec</span>';
+    const specs = Array.isArray(prod.specs) && prod.specs.length > 0
+      ? prod.specs
+      : [prod.outerFrame || prod.outer_frame || 'SS304 Grade Hardware', prod.finish || 'Weather Resistant Finish', prod.automation || 'Smart Automation Ready'];
+
+    const specsHtml = specs.slice(0, 3).map(s => `<span class="spec-pill"><i class="fas fa-shield-alt"></i> ${escapeHtmlSafe(s)}</span>`).join('');
 
     const badge = prod.badge || 'Premium Build';
-    const safeTitle = escapeHtmlSafe(prod.title);
+    const safeTitle = escapeHtmlSafe(prod.title || prod.name || 'Harichand Gate');
     const safeCat = escapeHtmlSafe(prod.category || 'aluminum-profile-gate');
-    const safeCatName = escapeHtmlSafe(prod.categoryName || 'Aluminum Profile Gate');
+    const safeCatName = escapeHtmlSafe(prod.categoryName || prod.category_display || 'Aluminum Profile Gate');
+    const prodSlug = prod.slug || slugify(prod.title || prod.name || prod.id);
+    const detailUrl = `/product/${prodSlug}`;
     const safeImg = escapeHtmlSafe(prod.image || 'images/prod-1.png');
-    const waText = encodeURIComponent(`Enquiry for ${prod.title}`);
 
     return `
       <article class="product-card" data-category="${safeCat}">
         <div class="product-thumb">
           <span class="product-badge">${escapeHtmlSafe(badge)}</span>
-          <a href="#${escapeHtmlSafe(prod.id)}">
+          <a href="${detailUrl}">
             <img src="${safeImg}" alt="${safeTitle}" onerror="this.src='images/prod-1.png'">
           </a>
         </div>
         <div class="product-body">
           <span class="product-category-link">${safeCatName}</span>
-          <h3 class="product-title"><a href="#${escapeHtmlSafe(prod.id)}">${safeTitle}</a></h3>
+          <h3 class="product-title"><a href="${detailUrl}">${safeTitle}</a></h3>
           <div class="product-specs">
             ${specsHtml}
           </div>
           <div class="product-card-ctas">
-            <button type="button" class="btn btn-outline-dark btn-sm trigger-inquiry-modal" data-product="${safeTitle}">View Details</button>
-            <a href="https://wa.me/919870433868?text=${waText}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Enquire</a>
+            <a href="${detailUrl}" class="btn btn-outline-dark btn-sm btn-view-details">View Details</a>
+            <button type="button" class="btn btn-whatsapp btn-sm trigger-inquiry-modal" data-product="${safeTitle}"><i class="fab fa-whatsapp"></i> Enquire</button>
           </div>
         </div>
       </article>
@@ -367,6 +705,48 @@ function hydrateProductsFromCMS() {
   // Re-bind product filter tabs and modal handlers
   initProductFilter();
   initModal();
+}
+
+function hydrateProductsFromCMS() {
+  const grid = document.querySelector('.product-cards-grid');
+  if (!grid) return;
+
+  // Stale-While-Revalidate: Instant render from local cache if present
+  let initialRendered = false;
+  if (typeof CMS !== 'undefined') {
+    const cachedProducts = CMS.getProducts();
+    if (cachedProducts && cachedProducts.length) {
+      renderProductCards(grid, cachedProducts);
+      initialRendered = true;
+    }
+  }
+
+  // Network Fetch: Load fresh catalog from backend / Supabase API
+  fetch('/api/products')
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    })
+    .then(serverProducts => {
+      if (Array.isArray(serverProducts) && serverProducts.length > 0) {
+        // Cache canonical server products in localStorage
+        try {
+          localStorage.setItem('hs_cms_products', JSON.stringify(serverProducts));
+        } catch (_) {}
+        // Update DOM with fresh server products
+        renderProductCards(grid, serverProducts);
+      }
+    })
+    .catch(err => {
+      console.warn('API /api/products fetch failed, utilizing localStorage offline fallback:', err);
+      // If we couldn't render from cache initially, try localStorage fallback now
+      if (!initialRendered && typeof CMS !== 'undefined') {
+        const fallbackProducts = CMS.getProducts();
+        if (fallbackProducts && fallbackProducts.length) {
+          renderProductCards(grid, fallbackProducts);
+        }
+      }
+    });
 }
 
 function hydrateNewsFromCMS() {

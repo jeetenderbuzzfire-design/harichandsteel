@@ -442,6 +442,24 @@ button, input, select, textarea {
   color: #ffffff;
 }
 
+.btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-outline-light:hover {
+  background: #ffffff;
+  color: #0f141a;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
 .btn-outline {
   border-color: rgba(255, 255, 255, 0.4);
   color: #ffffff;
@@ -1368,6 +1386,31 @@ button, input, select, textarea {
   color: #ffffff;
   border-color: var(--color-primary);
   box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.filter-btn .filter-count {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 0.82em;
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+.filter-btn:hover .filter-count,
+.filter-btn.active .filter-count {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.product-results-count {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: -24px auto 36px;
+}
+
+.product-results-count strong {
+  color: var(--text-main);
 }
 
 /* Products Grid */
@@ -2589,4 +2632,781 @@ button, input, select, textarea {
   background: var(--color-primary);
   color: #ffffff;
   transform: translateY(-2px);
+}
+
+
+/* ==========================================================================
+   CLEAN FEATURES SHOWCASE (WHY CHOOSE HARICHAND STEEL)
+   ========================================================================== */
+.features-clean-section {
+  background: #0f1722;
+  padding: 80px 0;
+  color: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.features-clean-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (max-width: 992px) {
+  .features-clean-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .features-clean-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feature-clean-card {
+  background: #111622;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-clean-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.feature-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.feature-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(211, 47, 47, 0.15);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.feature-card-badge {
+  background: rgba(255, 255, 255, 0.07);
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.04em;
+}
+
+.feature-card-title {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  margin: 0 0 10px;
+  letter-spacing: 0.02em;
+}
+
+.feature-card-desc {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.badge-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-light, #ef4444);
+  background: rgba(211, 47, 47, 0.12);
+  padding: 6px 14px;
+  border-radius: 30px;
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: clamp(2rem, 3.5vw, 2.7rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   PRODUCT CATALOGUE PAGINATION
+   ========================================================================== */
+.catalogue-pagination {
+  margin-top: 40px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.pagination-nav {
+  display: inline-block;
+}
+
+.pagination-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.pagination-list .page-item {
+  display: inline-block;
+}
+
+.pagination-list .page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  cursor: pointer;
+  user-select: none;
+}
+
+.pagination-list .page-link:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(211, 47, 47, 0.04);
+  transform: translateY(-1px);
+}
+
+.pagination-list .page-item.active .page-link {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+  cursor: default;
+  pointer-events: none;
+}
+
+.pagination-list .page-item.disabled .page-link {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  border-color: var(--color-border);
+  background: #f1f5f9;
+}
+
+
+/* ==========================================================================
+   PRODUCT DETAIL SINGLE PAGE STYLES
+   ========================================================================== */
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 991px) {
+  .product-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+.product-gallery-box {
+  position: sticky;
+  top: 96px;
+}
+
+.main-image-viewport {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.main-image-viewport .product-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 12px;
+  border-radius: 4px;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.35);
+}
+
+.product-featured-img {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.main-image-viewport:hover .product-featured-img {
+  transform: scale(1.02);
+}
+
+.thumbnail-strip {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.thumbnail-strip::-webkit-scrollbar {
+  height: 4px;
+}
+
+.thumbnail-strip::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.thumb-btn {
+  width: 82px;
+  height: 82px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumb-btn.active,
+.thumb-btn:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(211, 47, 47, 0.25);
+}
+
+.gallery-trust-badges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.trust-badge-item i {
+  color: var(--color-primary);
+  font-size: 1.1rem;
+}
+
+.gallery-action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.gallery-action-buttons .btn {
+  flex: 1;
+  min-width: 180px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Right Column Details */
+.detail-category-tag {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.detail-product-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  line-height: 1.2;
+  margin: 0 0 14px 0;
+}
+
+.detail-quick-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.detail-quick-specs .spec-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f1f5f9;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.detail-quick-specs .spec-pill i {
+  color: var(--color-primary);
+}
+
+/* Specification Table */
+.spec-table-container {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.spec-table-header {
+  padding: 14px 20px;
+  background: #0f141a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spec-table-header h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.spec-table-header i {
+  color: var(--color-primary);
+}
+
+.product-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-spec-table tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.product-spec-table tr:last-child {
+  border-bottom: none;
+}
+
+.product-spec-table th {
+  width: 32%;
+  padding: 14px 20px;
+  background: #f8fafc;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  text-align: left;
+  vertical-align: top;
+  border-right: 1px solid var(--color-border);
+}
+
+.product-spec-table td {
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  background: #ffffff;
+}
+
+.product-spec-table tr:hover td {
+  background: rgba(211, 47, 47, 0.015);
+}
+
+/* Direct Consultation Box */
+.detail-consult-box {
+  background: linear-gradient(135deg, #090c10 0%, #161e27 100%);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.detail-consult-box h4 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  margin: 0 0 6px 0;
+  color: #ffffff;
+}
+
+.detail-consult-box p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+/* Related Products Grid */
+.related-products-section {
+  padding-top: 40px;
+  padding-bottom: 60px;
+  background: #f8fafc;
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-view-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+
+/* ==========================================================================
+   MOBILE RESPONSIVE DEEP AUDIT SUITE (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* 1. Eliminate Floating Icons Overlap on Mobile Screens */
+  .floating-actions {
+    display: none !important;
+  }
+
+  /* 2. Persistent Clean 2-Button Bottom Bar */
+  .mobile-sticky-bar {
+    display: block !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(15, 20, 26, 0.98) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    padding: 10px 16px !important;
+    padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    z-index: 1000 !important;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .mobile-sticky-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    max-width: 540px !important;
+    margin: 0 auto !important;
+  }
+
+  .mobile-sticky-grid .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 14px !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    border-radius: var(--radius-sm, 6px) !important;
+  }
+
+  /* 3. Body Clearance for Sticky Bottom Bar */
+  body {
+    padding-bottom: 74px !important;
+  }
+
+  /* 4. Sticky Header Sizing & Text Safety */
+  .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    background: rgba(15, 20, 26, 0.98) !important;
+  }
+
+  .nav-wrapper {
+    padding: 10px 0 !important;
+  }
+
+  .brand-logo img {
+    height: 38px !important;
+  }
+
+  .brand-title {
+    font-size: 1.15rem !important;
+  }
+
+  .brand-subtitle {
+    font-size: 0.68rem !important;
+  }
+
+  /* 5. Hero Section Streamlining */
+  .hero-content {
+    padding: 48px 0 44px !important;
+  }
+
+  .hero-badge {
+    font-size: 0.78rem !important;
+    padding: 4px 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .hero-title {
+    font-size: clamp(1.85rem, 6.2vw, 2.5rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 14px !important;
+  }
+
+  .hero-desc {
+    font-size: 0.94rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 22px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* 2-Button Hero CTA Layout */
+  .hero-ctas {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-bottom: 28px !important;
+  }
+
+  .hero-ctas .btn {
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 12px 16px !important;
+    font-size: 0.92rem !important;
+    justify-content: center !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  .hero-stats-row {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    padding-top: 20px !important;
+  }
+
+  .hero-stat-num {
+    font-size: 1.4rem !important;
+  }
+
+  .hero-stat-label {
+    font-size: 0.74rem !important;
+  }
+
+  /* 6. Product Catalogue Filter Horizontal Touch Scrolling */
+  .product-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    justify-content: flex-start !important;
+    padding: 6px 16px 14px !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    margin-bottom: 24px !important;
+    gap: 8px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  .product-filters::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .product-filters .filter-btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 8px 18px !important;
+    font-size: 0.88rem !important;
+  }
+
+  /* 7. Product Detail Single Page Layout */
+  .product-detail-layout {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    margin-top: 10px !important;
+    margin-bottom: 36px !important;
+  }
+
+  .product-gallery-box {
+    position: static !important;
+  }
+
+  .product-featured-img {
+    height: clamp(240px, 60vw, 340px) !important;
+  }
+
+  .thumbnail-strip {
+    display: flex !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    padding: 6px 2px 10px !important;
+    scrollbar-width: thin !important;
+  }
+
+  .thumb-btn {
+    width: 68px !important;
+    height: 68px !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+    border-radius: 6px !important;
+  }
+
+  /* Full-width Responsive Technical Specifications Table */
+  .spec-table-container {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-md, 8px) !important;
+    background: #ffffff !important;
+    margin-top: 16px !important;
+  }
+
+  .product-spec-table {
+    width: 100% !important;
+    min-width: 480px !important;
+  }
+
+  .product-spec-table th {
+    width: 36% !important;
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+    vertical-align: top !important;
+  }
+
+  .product-spec-table td {
+    padding: 10px 14px !important;
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .gallery-action-buttons {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .gallery-action-buttons .btn {
+    width: 100% !important;
+  }
+
+  .detail-product-title {
+    font-size: 1.6rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .detail-consult-box {
+    padding: 18px 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-ctas {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .hero-ctas .btn {
+    width: 100% !important;
+  }
+
+  .hero-stats-row {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+
+/* ==========================================================================
+   MOBILE RESPONSIVE FLOATING ICONS & ZERO-G PHYSICS CARD GRID (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Complete cleanup of floating circular buttons on mobile */
+  .floating-actions,
+  .floating-btn,
+  .floating-contact-btn,
+  .floating-whatsapp-btn,
+  .scroll-top-btn,
+  .scroll-top {
+    display: none !important;
+  }
+
+  
 }

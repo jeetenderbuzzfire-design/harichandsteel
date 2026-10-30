@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/admin">
   <title>Admin Dashboard | Harichand Steel CMS</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
@@ -18,7 +19,7 @@
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-brand">
-      <img src="../images/logo.png" alt="Harichand Steel Logo" onerror="this.src='../images/logo.jpeg'">
+      <img src="../images/logo.jpeg" alt="Harichand Steel Logo" onerror="this.src='../images/logo.jpeg'">
       <div class="sidebar-brand-text">
         <h2>HARICHAND</h2>
         <span>CMS DASHBOARD</span>
@@ -56,7 +57,7 @@
         <span>Backup & Data</span>
       </button>
 
-      <a href="../index.html" class="admin-nav-item" target="_blank" rel="noopener">
+      <a href="/index.html" class="admin-nav-item" target="_blank" rel="noopener">
         <i class="fas fa-external-link-alt"></i>
         <span>View Website</span>
       </a>
@@ -102,7 +103,7 @@
           <i class="fas fa-pen-nib"></i>
           <span>Add Article</span>
         </button>
-        <a href="../product.html" target="_blank" class="admin-btn admin-btn-outline" title="Preview Public Products Page">
+        <a href="/product.html" target="_blank" class="admin-btn admin-btn-outline" title="Preview Public Products Page">
           <i class="fas fa-eye"></i>
         </a>
       </div>
@@ -199,7 +200,7 @@
                 <button type="button" class="admin-btn admin-btn-outline" style="justify-content: center;" id="dashBtnBackup">
                   <i class="fas fa-download"></i> Download Full Backup
                 </button>
-                <a href="product.html" target="_blank" class="admin-btn admin-btn-outline" style="justify-content: center;">
+                <a href="/product.html" target="_blank" class="admin-btn admin-btn-outline" style="justify-content: center;">
                   <i class="fas fa-globe"></i> Open Catalog in New Tab
                 </a>
               </div>
@@ -272,7 +273,7 @@
             </div>
 
             <div style="font-size: 0.85rem; color: var(--admin-text-muted);">
-              Showing <span id="productShowingCount" style="color: #fff; font-weight: 700;">0</span> products
+              <span id="productShowingCount" style="color: #fff; font-weight: 700;">Showing 0 items</span>
             </div>
           </div>
 
@@ -295,6 +296,7 @@
               </tbody>
             </table>
           </div>
+          <div class="admin-pagination" id="productsPagination"></div>
         </div>
 
       </section>
@@ -331,7 +333,7 @@
             </div>
 
             <div style="font-size: 0.85rem; color: var(--admin-text-muted);">
-              Showing <span id="blogShowingCount" style="color: #fff; font-weight: 700;">0</span> articles
+              <span id="blogShowingCount" style="color: #fff; font-weight: 700;">Showing 0 items</span>
             </div>
           </div>
 
@@ -353,6 +355,7 @@
               </tbody>
             </table>
           </div>
+          <div class="admin-pagination" id="blogsPagination"></div>
         </div>
 
       </section>
@@ -366,6 +369,7 @@
               <h3 class="panel-title">Customer Inquiries & Quote Leads</h3>
               <p style="margin: 4px 0 0; font-size: 0.85rem; color: var(--admin-text-muted);">Leads generated from the website contact form, quote estimator, and WhatsApp triggers.</p>
             </div>
+            <div style="font-size: 0.85rem; color: var(--admin-text-muted); margin-right: 8px; display: flex; align-items: center;"><span id="inquiryShowingCount" style="color: #fff; font-weight: 700;">Showing 0 items</span></div>
             <div style="display: flex; gap: 10px;">
               <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" id="btnExportInquiries">
                 <i class="fas fa-file-csv"></i> Export CSV
@@ -395,6 +399,7 @@
               </tbody>
             </table>
           </div>
+          <div class="admin-pagination" id="inquiriesPagination"></div>
         </div>
 
       </section>
@@ -485,8 +490,10 @@
             <label for="prodInputCategory">Category *</label>
             <select class="admin-select" id="prodInputCategory" style="width: 100%;" required>
               <option value="aluminum-profile-gate">Aluminum Profile Gate</option>
+              <option value="iron-main-gate">Iron Main Gate</option>
               <option value="steel-main-gate">Steel Main Gate</option>
               <option value="steel-door">Steel Door</option>
+              <option value="powder-coated-gates">Powder Coated Gates</option>
               <option value="modern-railings">Modern Railings</option>
               <option value="custom-fabrication">Custom Fabrication</option>
             </select>

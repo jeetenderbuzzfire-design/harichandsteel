@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "serve": "node server.js",
+    "dev": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   "homepage": "https://github.com/jeetenderbuzzfire-design/harichandsteel#readme",
   "dependencies": {
     "dotenv": "^18.0.9",
+    "matter-js": "^0.20.0",
     "pg": "^8.23.1"
   }
 }

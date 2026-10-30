@@ -1,8 +1,20 @@
 [
   {
+    "title": "Test Automated Gate Guide 2026",
+    "slug": "/test-automated-gate-guide-2026.html",
+    "tag": "Design Guide",
+    "author": "Harichand Senior Engineer",
+    "date": "October 29, 2026",
+    "image": "images/about-3.jpg",
+    "excerpt": "Comprehensive engineering breakdown of heavy duty stainless steel gates.",
+    "content": "<h2>Gate Automation Architecture</h2><p>Our custom fabricated gates feature heavy duty Italian motors and seamless stainless steel ball bearings.</p>",
+    "published": true,
+    "id": "blog-1793263012906"
+  },
+  {
     "id": "blog-1793107304359",
     "title": "abd",
-    "slug": "news.html",
+    "slug": "/news.html",
     "tag": "Design Guide",
     "author": "Harichand Steel Team",
     "date": "October 27, 2026",
@@ -14,7 +26,7 @@
   {
     "id": "blog-1",
     "title": "Latest Steel Gate Design (2025) – Ultimate Modern Guide",
-    "slug": "steel-gate-design.html",
+    "slug": "/steel-gate-design.html",
     "tag": "Design Guide",
     "image": "images/about-3.jpg",
     "author": "Harichand Steel Team",
@@ -26,7 +38,7 @@
   {
     "id": "blog-2",
     "title": "Best Steel Gate Manufacturer In Delhi – Complete Buyer's Guide",
-    "slug": "best-steel-gate-manufacturer-in-delhi.html",
+    "slug": "/best-steel-gate-manufacturer-in-delhi.html",
     "tag": "Manufacturing",
     "image": "images/about-2.jpg",
     "author": "Harichand Steel Team",
@@ -38,7 +50,7 @@
   {
     "id": "blog-3",
     "title": "Aluminium Profile Gate Manufacturer in Janakpuri – Innovation & Strength",
-    "slug": "aluminium-profile-gate-manufacturer-in-janakpuri.html",
+    "slug": "/aluminium-profile-gate-manufacturer-in-janakpuri.html",
     "tag": "Case Study",
     "image": "images/profile-box.jpg",
     "author": "Harichand Steel Team",
@@ -50,7 +62,7 @@
   {
     "id": "blog-4",
     "title": "Aluminum Profile Gate Manufacturer in Prithviraj Road",
-    "slug": "news.html#prithviraj-road",
+    "slug": "/news.html#prithviraj-road",
     "tag": "Luxury Projects",
     "image": "images/hero-slide-2.jpg",
     "author": "Harichand Steel Team",

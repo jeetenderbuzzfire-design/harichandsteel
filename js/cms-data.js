@@ -158,6 +158,110 @@ const CMS = (function () {
       price: "On Request",
       featured: false,
       createdAt: "2026-01-15"
+    },
+    {
+      id: "prod-iron-1",
+      title: "Wrought Iron Luxury Main Gate",
+      category: "iron-main-gate",
+      categoryName: "Iron Main Gate",
+      badge: "Hand Forged",
+      image: "images/Main-Entrance-Gate_2850083224362_stainless-steel-window-grills-576x1024.jpg",
+      description: "Classic heavy wrought iron entrance gate with hand-forged scrollwork, spearhead finials, and multi-stage rust-resistant primer.",
+      specs: ["Heavy Solid Iron Stock", "Hand-Crafted Floral Finials", "Anti-Corrosion Red Oxide Coating"],
+      price: "On Request",
+      featured: true,
+      createdAt: "2026-02-12"
+    },
+    {
+      id: "prod-iron-2",
+      title: "Modern Cast Iron Sliding Gate",
+      category: "iron-main-gate",
+      categoryName: "Iron Main Gate",
+      badge: "Heavy Duty",
+      image: "images/20231103_094312-scaled.jpg",
+      description: "Industrial strength decorative iron sliding gate designed for wide bungalow entrances, high security estates, and villa perimeters.",
+      specs: ["Reinforced Iron Channel Frame", "Heavy Duty Bottom Rollers", "Weather Seal Coating"],
+      price: "On Request",
+      featured: false,
+      createdAt: "2026-02-08"
+    },
+    {
+      id: "prod-iron-3",
+      title: "Decorative Wrought Iron Double Gate",
+      category: "iron-main-gate",
+      categoryName: "Iron Main Gate",
+      badge: "Artisanal Build",
+      image: "images/download-5.jpg",
+      description: "Timeless dual-swing wrought iron gate with intricate center crest medallion, heavy-duty pivot bushings, and motorized opener bracket.",
+      specs: ["Traditional Forged Iron", "Anti-Sag Heavy Pivot Bushings", "Custom Crest Monogram"],
+      price: "On Request",
+      featured: false,
+      createdAt: "2026-01-25"
+    },
+    {
+      id: "prod-powder-1",
+      title: "Matte Black Powder Coated Modern Gate",
+      category: "powder-coated-gates",
+      categoryName: "Powder Coated Gates",
+      badge: "Scratch Proof",
+      image: "images/golden-brown-profile-gate-1024x461.jpg",
+      description: "Sleek architectural steel gate coated with 80-micron electrostatically applied matte black thermoset powder.",
+      specs: ["80 Micron Electrostatic Coat", "UV Fade & Weatherproof", "Smooth Architectural Finish"],
+      price: "On Request",
+      featured: true,
+      createdAt: "2026-02-14"
+    },
+    {
+      id: "prod-powder-2",
+      title: "Antique Bronze Powder Coated Steel Gate",
+      category: "powder-coated-gates",
+      categoryName: "Powder Coated Gates",
+      badge: "Luxury Finish",
+      image: "images/20231029_141009-1024x768.jpg",
+      description: "Premium metallic antique bronze textured powder coating over galvanized rust-resistant steel frame with motorized dual swing.",
+      specs: ["10-Year Coating Guarantee", "Impact & Scratch Resistant", "Dual Swing Automated"],
+      price: "On Request",
+      featured: false,
+      createdAt: "2026-02-02"
+    },
+    {
+      id: "prod-powder-3",
+      title: "Wood-Grain Powder Coated Profile Gate",
+      category: "powder-coated-gates",
+      categoryName: "Powder Coated Gates",
+      badge: "Wood Texture",
+      image: "images/aluminuim-profile-box-1-1-1024x576.jpg",
+      description: "Innovative heat-sublimated wood grain powder coating providing natural timber warm aesthetics with zero rot and zero maintenance.",
+      specs: ["Sublimation Wood Finish", "Zero Rot & Termite Proof", "Marine Grade Substrate"],
+      price: "On Request",
+      featured: true,
+      createdAt: "2026-01-18"
+    },
+    {
+      id: "prod-10",
+      title: "SS304 Modern Laser Cut Steel Gate",
+      category: "steel-main-gate",
+      categoryName: "Steel Main Gate",
+      badge: "CNC Laser",
+      image: "images/20230723_115650-768x1024.jpg",
+      description: "Architectural grade SS304 stainless steel entrance gate with geometric laser cut privacy grilles and mirror polish accents.",
+      specs: ["100% Certified SS304", "CNC Fiber Laser Precision", "Mirror Polish Accents"],
+      price: "On Request",
+      featured: false,
+      createdAt: "2026-01-22"
+    },
+    {
+      id: "prod-11",
+      title: "Heavy Security Exterior Steel Door",
+      category: "steel-door",
+      categoryName: "Steel Door",
+      badge: "Impact Rated",
+      image: "images/Interior-Door_24388653330_product-jpeg-768x1024.jpg",
+      description: "Double-walled reinforced steel perimeter door with multi-point biometric deadbolt locking system and weatherstrip insulation.",
+      specs: ["Double Galvanized Steel Skin", "High Security Multi-Bolt", "Weatherstrip Sound Insulation"],
+      price: "On Request",
+      featured: false,
+      createdAt: "2026-01-12"
     }
   ];
 
@@ -166,7 +270,7 @@ const CMS = (function () {
     {
       id: "blog-1",
       title: "Latest Steel Gate Design (2025) – Ultimate Modern Guide",
-      slug: "steel-gate-design.html",
+      slug: "/steel-gate-design.html",
       tag: "Design Guide",
       image: "images/about-3.jpg",
       author: "Harichand Steel Team",
@@ -178,7 +282,7 @@ const CMS = (function () {
     {
       id: "blog-2",
       title: "Best Steel Gate Manufacturer In Delhi – Complete Buyer's Guide",
-      slug: "best-steel-gate-manufacturer-in-delhi.html",
+      slug: "/best-steel-gate-manufacturer-in-delhi.html",
       tag: "Manufacturing",
       image: "images/about-2.jpg",
       author: "Harichand Steel Team",
@@ -190,7 +294,7 @@ const CMS = (function () {
     {
       id: "blog-3",
       title: "Aluminium Profile Gate Manufacturer in Janakpuri – Innovation & Strength",
-      slug: "aluminium-profile-gate-manufacturer-in-janakpuri.html",
+      slug: "/aluminium-profile-gate-manufacturer-in-janakpuri.html",
       tag: "Case Study",
       image: "images/profile-box.jpg",
       author: "Harichand Steel Team",
@@ -202,7 +306,7 @@ const CMS = (function () {
     {
       id: "blog-4",
       title: "Aluminum Profile Gate Manufacturer in Prithviraj Road",
-      slug: "news.html#prithviraj-road",
+      slug: "/news.html#prithviraj-road",
       tag: "Luxury Projects",
       image: "images/hero-slide-2.jpg",
       author: "Harichand Steel Team",
@@ -215,8 +319,21 @@ const CMS = (function () {
 
   // Initialize data in store
   function initStorage() {
-    if (!store.getItem(STORAGE_KEYS.PRODUCTS)) {
+    const existing = store.getItem(STORAGE_KEYS.PRODUCTS);
+    if (!existing) {
       store.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(defaultProducts));
+    } else {
+      try {
+        const parsed = JSON.parse(existing);
+        const hasIron = parsed.some(p => p.category === 'iron-main-gate');
+        const hasPowder = parsed.some(p => p.category === 'powder-coated-gates');
+        if (!hasIron || !hasPowder) {
+          const missing = defaultProducts.filter(dp => !parsed.some(ep => ep.id === dp.id));
+          if (missing.length) {
+            store.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify([...parsed, ...missing]));
+          }
+        }
+      } catch (_) {}
     }
     if (!store.getItem(STORAGE_KEYS.BLOGS)) {
       store.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(defaultBlogs));
@@ -228,13 +345,23 @@ const CMS = (function () {
 
   initStorage();
 
+  // Admin API Secret Key configuration
+  const ADMIN_API_KEY = (typeof window !== 'undefined' && window.ADMIN_API_KEY) ||
+                        (typeof localStorage !== 'undefined' && localStorage.getItem('hs_admin_api_key')) ||
+                        'hs_admin_secret_key_2026';
+
   // Helper to sync with local Node server if running
-  async function syncToServer(endpoint, data) {
+  async function syncToServer(endpoint, data, method = 'POST') {
     try {
       if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+        const headers = {
+          'Content-Type': 'application/json',
+          'x-admin-key': ADMIN_API_KEY,
+          'Authorization': `Bearer ${ADMIN_API_KEY}`
+        };
         await fetch(`/api/${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: method,
+          headers: headers,
           body: JSON.stringify(data)
         });
       }
@@ -279,6 +406,17 @@ const CMS = (function () {
       products = products.filter(p => p.id !== id);
       store.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
       syncToServer('products', products);
+      if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+        try {
+          fetch(`/api/products?id=${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: {
+              'x-admin-key': ADMIN_API_KEY,
+              'Authorization': `Bearer ${ADMIN_API_KEY}`
+            }
+          }).catch(() => {});
+        } catch (_) {}
+      }
       triggerEvent('cms:products:updated', products);
       return true;
     },
@@ -318,6 +456,17 @@ const CMS = (function () {
       blogs = blogs.filter(b => b.id !== id);
       store.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(blogs));
       syncToServer('blogs', blogs);
+      if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+        try {
+          fetch(`/api/blogs?id=${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: {
+              'x-admin-key': ADMIN_API_KEY,
+              'Authorization': `Bearer ${ADMIN_API_KEY}`
+            }
+          }).catch(() => {});
+        } catch (_) {}
+      }
       triggerEvent('cms:blogs:updated', blogs);
       return true;
     },

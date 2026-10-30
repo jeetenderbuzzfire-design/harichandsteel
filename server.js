@@ -224,7 +224,7 @@ async function requestDispatcher(req, res) {
               currentProducts.unshift(item);
             }
             if (db && typeof db.saveProduct === 'function') {
-              try { await db.saveProduct(item); } catch (_) {}
+              try { await db.saveProduct(item); } catch (_) { }
             }
           }
           fs.writeFileSync(productsFile, JSON.stringify(currentProducts, null, 2), 'utf8');
@@ -239,7 +239,7 @@ async function requestDispatcher(req, res) {
           }
           fs.writeFileSync(productsFile, JSON.stringify(currentProducts, null, 2), 'utf8');
           if (db && typeof db.saveProduct === 'function') {
-            try { await db.saveProduct(item); } catch (_) {}
+            try { await db.saveProduct(item); } catch (_) { }
           }
           sendJson(res, 200, { success: true, product: item });
         } else {
@@ -387,7 +387,7 @@ async function requestDispatcher(req, res) {
   // 4. NESTED ASSET SERVING FOR /product/ & /admin/
   // ==========================================
 
-  // Assets inside /product/ (e.g. /product/css/style.css, /product/page/2/js/main.js)
+  // Assets inside /product/ (e.g. /product//css/style.css, /product/page/2/js/main.js)
   if (pathname.startsWith('/product/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
     const assetMatch = pathname.match(/\/product\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+)$/);
     if (assetMatch) {
@@ -542,6 +542,20 @@ async function requestDispatcher(req, res) {
 // Create Main Server
 const server = http.createServer(requestDispatcher);
 
+// Primary server error listener
+server.on('error', (err) => {
+  console.error(' [Server Guard] Primary Server Error:', err.message);
+});
+
+// Global process crash prevention
+process.on('uncaughtException', (err) => {
+  console.error(' [Server Guard] Uncaught Exception:', err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error(' [Server Guard] Unhandled Rejection:', reason && reason.message ? reason.message : reason);
+});
+
 // Start Server on 0.0.0.0 (Port 8080)
 server.listen(PORT, '0.0.0.0', () => {
   console.log('================================================================');
@@ -568,5 +582,5 @@ if (PORT != ALT_PORT) {
     altServer.on('error', (err) => {
       console.log(` [Notice] Port ${ALT_PORT} not bound: ${err.message}`);
     });
-  } catch (_) {}
+  } catch (_) { }
 }

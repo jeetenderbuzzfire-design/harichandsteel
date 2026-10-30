@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const indexHtml = fs.readFileSync('C:/Users/Lenovo/.gemini/antigravity/scratch/harichand-steel-redesign/index.html', 'utf8');
-const styleCss = fs.readFileSync('C:/Users/Lenovo/.gemini/antigravity/scratch/harichand-steel-redesign//css/style.css', 'utf8');
+const styleCss = fs.readFileSync('C:/Users/Lenovo/.gemini/antigravity/scratch/harichand-steel-redesign/./css/style.css', 'utf8');
 const mainJs = fs.readFileSync('C:/Users/Lenovo/.gemini/antigravity/scratch/harichand-steel-redesign/js/main.js', 'utf8');
 
 console.log('HTML size:', indexHtml.length, 'bytes');

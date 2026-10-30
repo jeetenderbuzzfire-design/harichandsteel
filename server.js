@@ -387,7 +387,7 @@ async function requestDispatcher(req, res) {
   // 4. NESTED ASSET SERVING FOR /product/ & /admin/
   // ==========================================
 
-  // Assets inside /product/ (e.g. /product//css/style.css, /product/page/2/js/main.js)
+  // Assets inside /product/ (e.g. /product/./css/style.css, /product/page/2/js/main.js)
   if (pathname.startsWith('/product/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
     const assetMatch = pathname.match(/\/product\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+)$/);
     if (assetMatch) {

@@ -23,7 +23,7 @@ for (const d of directories) {
 
   const sourceContent = fs.readFileSync(path.join(baseDir, d.source), 'utf8');
 
-  // Fix relative paths for files in subfolder (e.g. /css/style.css -> ..//css/style.css, images/ -> ../images/, js/ -> ../js/)
+  // Fix relative paths for files in subfolder (e.g. ./css/style.css -> .././css/style.css, images/ -> ../images/, js/ -> ../js/)
   const adjustedContent = sourceContent
     .replace(/(href|src)=["']css\//g, '$1="../css/')
     .replace(/(href|src)=["']images\//g, '$1="../images/')

@@ -1584,6 +1584,60 @@ button, input, select, textarea {
   font-weight: 600;
 }
 
+/* Detailed Product Category Cards (e.g. on our-products.html) */
+.cat-tile-detail {
+  padding: 32px 24px;
+  text-align: left;
+  align-items: flex-start;
+  scroll-margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cat-tile-detail .cat-icon {
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.cat-tile-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.cat-tile-desc {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.cat-tile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.cat-tile-actions .btn {
+  flex: 1 1 auto;
+  text-align: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.cat-tile[id],
+section[id],
+.product-card[id] {
+  scroll-margin-top: 100px;
+}
+
 /* Load More CTA Box */
 .load-more-box {
   text-align: center;
@@ -3949,6 +4003,29 @@ img, video, iframe, embed, object {
     padding: 16px 10px !important;
   }
 
+  .cat-tile-detail {
+    padding: 20px 16px !important;
+  }
+
+  .cat-tile-title {
+    font-size: 1.18rem !important;
+  }
+
+  .cat-tile-desc {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .cat-tile-actions {
+    gap: 8px !important;
+  }
+
+  .cat-tile-actions .btn {
+    padding: 9px 10px !important;
+    font-size: 0.85rem !important;
+  }
+
   .collage-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
@@ -4247,6 +4324,23 @@ img, video, iframe, embed, object {
   .category-cards-grid {
     grid-template-columns: 1fr !important;
     gap: 10px !important;
+  }
+
+  .cat-tile-detail {
+    padding: 16px 12px !important;
+  }
+
+  .cat-tile-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .cat-tile-actions .btn {
+    flex: 1 1 calc(50% - 4px) !important;
+    min-width: 110px !important;
+    padding: 9px 6px !important;
+    font-size: 0.8rem !important;
   }
 
   .collage-grid {

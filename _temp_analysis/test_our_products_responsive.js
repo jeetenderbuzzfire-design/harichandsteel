@@ -14,8 +14,13 @@ const testViewports = [
   { name: 'Tablet (768px)', width: 768, height: 1024 }
 ];
 
+const urlsToTest = [
+  'http://localhost:8080/our-products',
+  'http://localhost:8080/our-products.html'
+];
+
 async function run() {
-  const debugPort = 9241;
+  const debugPort = 9243;
   const chromeProc = spawn(chromePath, [
     `--remote-debugging-port=${debugPort}`,
     '--headless=new',
@@ -65,75 +70,81 @@ async function run() {
   }
 
   await send('Page.enable');
-  await send('Page.navigate', { url: 'http://localhost:8080/our-products' });
-  await new Promise(r => setTimeout(r, 1200));
 
-  console.log('=== OUR PRODUCTS CATEGORY GRID AUDIT ===\n');
+  for (const testUrl of urlsToTest) {
+    console.log(`\n======================================================`);
+    console.log(`TESTING URL: ${testUrl}`);
+    console.log(`======================================================`);
+    await send('Page.navigate', { url: testUrl });
+    await new Promise(r => setTimeout(r, 1200));
 
-  for (const vp of testViewports) {
-    await send('Emulation.setDeviceMetricsOverride', {
-      width: vp.width,
-      height: vp.height,
-      deviceScaleFactor: 2,
-      mobile: vp.width <= 768
-    });
-    await new Promise(r => setTimeout(r, 300));
-
-    const res = await send('Runtime.evaluate', {
-      expression: `
-        (() => {
-          const grid = document.querySelector('.category-cards-grid');
-          const tiles = Array.from(document.querySelectorAll('.category-cards-grid .cat-tile'));
-          const docWidth = document.documentElement.clientWidth;
-
-          return {
-            docWidth,
-            gridRect: { width: Math.round(grid.getBoundingClientRect().width), right: Math.round(grid.getBoundingClientRect().right) },
-            gridColumns: window.getComputedStyle(grid).gridTemplateColumns,
-            tiles: tiles.map((t, idx) => {
-              const r = t.getBoundingClientRect();
-              const cs = window.getComputedStyle(t);
-              const actionDiv = t.querySelector('div[style*="display: flex"]') || t.querySelector('div:last-child');
-              const btns = Array.from(t.querySelectorAll('.btn')).map(b => {
-                const br = b.getBoundingClientRect();
-                return {
-                  text: b.innerText.trim(),
-                  href: b.getAttribute('href'),
-                  width: Math.round(br.width),
-                  right: Math.round(br.right)
-                };
-              });
-
-              return {
-                idx,
-                title: t.querySelector('h3') ? t.querySelector('h3').innerText : '',
-                width: Math.round(r.width),
-                right: Math.round(r.right),
-                padding: cs.padding,
-                overflows: r.right > docWidth + 1,
-                actionFlexWrap: actionDiv ? window.getComputedStyle(actionDiv).flexWrap : null,
-                btns
-              };
-            })
-          };
-        })()
-      `,
-      returnByValue: true
-    });
-
-    const val = res.result.value;
-    console.log(`--- Viewport: ${vp.name} (width: ${vp.width}px) ---`);
-    console.log(`Grid Columns: ${val.gridColumns}`);
-    val.tiles.forEach(t => {
-      console.log(`  Tile [${t.title}]: width=${t.width}px, right=${t.right}px, padding=${t.padding}, overflows=${t.overflows}`);
-      t.btns.forEach(b => {
-        console.log(`    Btn "${b.text}": href="${b.href}", width=${b.width}px, right=${b.right}px`);
+    for (const vp of testViewports) {
+      await send('Emulation.setDeviceMetricsOverride', {
+        width: vp.width,
+        height: vp.height,
+        deviceScaleFactor: 2,
+        mobile: vp.width <= 768
       });
-    });
-    console.log('');
+      await new Promise(r => setTimeout(r, 250));
+
+      const res = await send('Runtime.evaluate', {
+        expression: `
+          (() => {
+            const grid = document.querySelector('.category-cards-grid');
+            const tiles = Array.from(document.querySelectorAll('.category-cards-grid .cat-tile'));
+            const docWidth = document.documentElement.clientWidth;
+            const scrollWidth = document.documentElement.scrollWidth;
+
+            return {
+              docWidth,
+              scrollWidth,
+              hasPageOverflow: scrollWidth > docWidth,
+              gridRect: { width: Math.round(grid.getBoundingClientRect().width), right: Math.round(grid.getBoundingClientRect().right) },
+              gridColumns: window.getComputedStyle(grid).gridTemplateColumns,
+              tiles: tiles.map((t, idx) => {
+                const r = t.getBoundingClientRect();
+                const cs = window.getComputedStyle(t);
+                const btns = Array.from(t.querySelectorAll('.btn')).map(b => {
+                  const br = b.getBoundingClientRect();
+                  return {
+                    text: b.innerText.trim(),
+                    href: b.getAttribute('href'),
+                    width: Math.round(br.width),
+                    right: Math.round(br.right),
+                    overflows: br.right > r.right + 1
+                  };
+                });
+
+                return {
+                  id: t.id,
+                  title: t.querySelector('h3') ? t.querySelector('h3').innerText : '',
+                  width: Math.round(r.width),
+                  right: Math.round(r.right),
+                  padding: cs.padding,
+                  overflows: r.right > docWidth + 1,
+                  btns
+                };
+              })
+            };
+          })()
+        `,
+        returnByValue: true
+      });
+
+      const val = res.result.value;
+      console.log(`\n--- Viewport: ${vp.name} (width: ${vp.width}px) ---`);
+      console.log(`Document scrollWidth=${val.scrollWidth}px vs clientWidth=${val.docWidth}px (Overflow: ${val.hasPageOverflow})`);
+      val.tiles.forEach(t => {
+        console.log(`  Card [${t.title}] id="#${t.id}": width=${t.width}px, padding=${t.padding}, overflows=${t.overflows}`);
+        t.btns.forEach(b => {
+          console.log(`    Btn "${b.text}": href="${b.href}", width=${b.width}px, overflowsCard=${b.overflows}`);
+        });
+      });
+    }
   }
 
   ws.close();
   chromeProc.kill();
+  console.log('\nAudit completed successfully.');
 }
 run();

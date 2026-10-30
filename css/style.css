@@ -2241,6 +2241,14 @@ section[id],
   .category-cards-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .cat-tile-detail {
+    padding: 24px 20px !important;
+  }
+
+  .cat-tile-title {
+    font-size: 1.25rem !important;
+  }
   
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);

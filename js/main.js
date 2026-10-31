@@ -239,9 +239,49 @@ function initProductFilter() {
     let currentFilter = 'all';
     let currentPage = paginationContainer ? getPageFromUrl() : 1;
 
+    // Category Metadata Dictionary for dynamic heading, lead text, breadcrumb, and titles
+    const CATEGORY_META = {
+      'all': {
+        title: 'Gate Products Catalogue',
+        lead: 'Explore premium handcrafted gate models built for luxury, safety, and longevity.',
+        breadcrumb: 'Product',
+        docTitle: 'Gate Products Catalogue - HARICHAND STEEL'
+      },
+      'steel-door': {
+        title: 'Steel Doors',
+        lead: 'Heavy-duty security doors designed for main entrances, back doors, and security partitions with multi-point locking systems and weatherproofing.',
+        breadcrumb: 'Steel Doors',
+        docTitle: 'Steel Doors - HARICHAND STEEL'
+      },
+      'aluminum-profile-gate': {
+        title: 'Aluminum Profile Gates',
+        lead: 'Engineered with lightweight yet rigid aluminium extrusions, offering modern luxury styling, rust-proof longevity, and effortless automation capability.',
+        breadcrumb: 'Aluminum Profile Gate',
+        docTitle: 'Aluminum Profile Gates - HARICHAND STEEL'
+      },
+      'iron-main-gate': {
+        title: 'Iron Main Gates',
+        lead: 'Heavy-duty wrought iron main entrance gates crafted with traditional forged strength, security spikes, and timeless aesthetic designs.',
+        breadcrumb: 'Iron Main Gate',
+        docTitle: 'Iron Main Gates - HARICHAND STEEL'
+      },
+      'steel-main-gate': {
+        title: 'Steel Main Gates',
+        lead: 'Fabricated from genuine SS304 grade stainless steel and heavy-gauge mild steel featuring intricate CNC laser-cut designs with polished mirror or matte finishes.',
+        breadcrumb: 'Steel Main Gate',
+        docTitle: 'Steel Main Gates - HARICHAND STEEL'
+      },
+      'powder-coated-gates': {
+        title: 'Powder Coated Gates',
+        lead: 'Superior rust-resistant powder-coated gate systems offering vibrant long-lasting exterior colors, UV protection, and minimal maintenance.',
+        breadcrumb: 'Powder Coated Gates',
+        docTitle: 'Powder Coated Gates - HARICHAND STEEL'
+      }
+    };
+
     // Helper: get display label for category
     function getCategoryLabel(filterKey) {
-      if (!filterKey || filterKey === 'all') return 'All Products';
+      if (!filterKey || filterKey === 'all') return 'All Gates';
       const btn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === filterKey);
       if (btn) {
         return btn.getAttribute('data-label') || btn.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
@@ -249,40 +289,73 @@ function initProductFilter() {
       return filterKey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
 
-    // 3. Render Breadcrumbs
+    // Helper: get full metadata for category
+    function getCategoryMeta(filterKey) {
+      if (!filterKey || filterKey === 'all') return CATEGORY_META['all'];
+      if (CATEGORY_META[filterKey]) return CATEGORY_META[filterKey];
+      const fallbackLabel = getCategoryLabel(filterKey);
+      return {
+        title: fallbackLabel,
+        lead: `Explore our premium handcrafted ${fallbackLabel.toLowerCase()} collection built for luxury, safety, and longevity.`,
+        breadcrumb: fallbackLabel,
+        docTitle: `${fallbackLabel} - HARICHAND STEEL`
+      };
+    }
+
+    // Helper: update page banner header and subtitle dynamically
+    function updateBannerHeader(page) {
+      const bannerTitle = document.getElementById('cataloguePageTitle') || document.querySelector('.page-header-banner .page-title');
+      const bannerLead = document.getElementById('cataloguePageLead') || document.querySelector('.page-header-banner .page-lead');
+      const meta = getCategoryMeta(currentFilter);
+
+      if (bannerTitle) {
+        const fullTitle = meta.title + (page > 1 ? ` (Page ${page})` : '');
+        if (bannerTitle.textContent !== fullTitle) {
+          bannerTitle.textContent = fullTitle;
+        }
+      }
+      if (bannerLead) {
+        if (bannerLead.textContent !== meta.lead) {
+          bannerLead.textContent = meta.lead;
+        }
+      }
+    }
+
+    // 3. Render Breadcrumbs & Title
     function renderBreadcrumbs(page) {
       if (!breadcrumbNav) return;
       const isFiltered = currentFilter && currentFilter !== 'all';
-      const categoryLabel = getCategoryLabel(currentFilter);
+      const meta = getCategoryMeta(currentFilter);
+      const breadcrumbLabel = meta.breadcrumb || getCategoryLabel(currentFilter);
 
       if (isFiltered) {
         if (page > 1) {
           breadcrumbNav.innerHTML = `
             <a href="index.html">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="product.html">Product</a>
+            <a href="/product">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product-category/${currentFilter}/">${categoryLabel}</a>
+            <a href="/product-category/${currentFilter}/">${breadcrumbLabel}</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Page ${page}</span>
           `;
-          document.title = `${categoryLabel} - Page ${page} - HARICHAND STEEL`;
+          document.title = `${meta.title} - Page ${page} - HARICHAND STEEL`;
         } else {
           breadcrumbNav.innerHTML = `
             <a href="index.html">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="product.html">Product</a>
+            <a href="/product">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <span>${categoryLabel}</span>
+            <span>${breadcrumbLabel}</span>
           `;
-          document.title = `${categoryLabel} - HARICHAND STEEL`;
+          document.title = `${meta.title} - HARICHAND STEEL`;
         }
       } else {
         if (page > 1) {
           breadcrumbNav.innerHTML = `
             <a href="index.html">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="product.html">Product</a>
+            <a href="/product">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Page ${page}</span>
           `;
@@ -293,7 +366,7 @@ function initProductFilter() {
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Product</span>
           `;
-          document.title = 'Product - HARICHAND STEEL';
+          document.title = 'Gate Products Catalogue - HARICHAND STEEL';
         }
       }
     }
@@ -426,6 +499,9 @@ function initProductFilter() {
           }
         }
 
+        // Update Banner Heading & Description
+        updateBannerHeader(currentPage);
+
         // Update Breadcrumbs
         renderBreadcrumbs(currentPage);
 
@@ -482,6 +558,7 @@ function initProductFilter() {
             countSummary.innerHTML = `Showing <strong>${visibleCount}</strong> of <strong>${cards.length}</strong> results in <em>${activeLabel}</em>`;
           }
         }
+        updateBannerHeader(1);
       }
     }
 

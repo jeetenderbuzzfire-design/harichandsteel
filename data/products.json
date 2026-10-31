@@ -33,7 +33,7 @@
       "Test Spec 2"
     ],
     "featured": false,
-    "id": "prod-1793104339836",
+    "id": "2",
     "createdAt": "2026-10-27",
     "slug": "supabase-test-gate",
     "outerFrame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
@@ -41,7 +41,13 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Supabase Test Gate",
+    "categoryName": "Aluminum Profile Gate",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-10-27T00:00:00.000Z"
   },
   {
     "title": "Supabase Test Gate",
@@ -66,7 +72,7 @@
     "automation": "100% compatible with motorized remote swing & sliding gate operators"
   },
   {
-    "id": "prod-1",
+    "id": "4",
     "title": "Aluminium Door Profile Gate",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -87,10 +93,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminium Door Profile Gate",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-24T00:00:00.000Z"
   },
   {
-    "id": "prod-2",
+    "id": "5",
     "title": "Aluminium Profile Gate For Home",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -111,10 +122,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminium Profile Gate For Home",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-20T00:00:00.000Z"
   },
   {
-    "id": "prod-3",
+    "id": "6",
     "title": "Aluminium Profile Main Gate",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -135,10 +151,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminium Profile Main Gate",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-18T00:00:00.000Z"
   },
   {
-    "id": "prod-4",
+    "id": "7",
     "title": "Aluminium Sliding Main Entrance Gate",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -159,10 +180,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminium Sliding Main Entrance Gate",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-15T00:00:00.000Z"
   },
   {
-    "id": "prod-5",
+    "id": "8",
     "title": "Aluminum Profile Gate With Rose Gold Handle",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -183,10 +209,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminum Profile Gate With Rose Gold Handle",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-10T00:00:00.000Z"
   },
   {
-    "id": "prod-6",
+    "id": "9",
     "title": "Aluminum Profile Gate With Steel Frame",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -207,10 +238,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminum Profile Gate With Steel Frame",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-02-05T00:00:00.000Z"
   },
   {
-    "id": "prod-7",
+    "id": "10",
     "title": "Aluminum Profile Swing Gate for Home",
     "category": "aluminum-profile-gate",
     "categoryName": "Aluminum Profile Gate",
@@ -231,10 +267,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Heavy-duty sealed stainless-steel ball bearing hinges & concealed locks",
-    "automation": "100% compatible with motorized remote swing & sliding gate operators"
+    "automation": "100% compatible with motorized remote swing & sliding gate operators",
+    "name": "Aluminum Profile Swing Gate for Home",
+    "category_display": "Aluminum Profile Gate",
+    "outer_frame": "Heavy-duty extruded T6 Aluminium alloy profile frame",
+    "inner_frame": "Interlocking 16 Gauge (16G) structural cross-members",
+    "created_at": "2026-01-28T00:00:00.000Z"
   },
   {
-    "id": "prod-8",
+    "id": "11",
     "title": "Double Door Steel Gate",
     "category": "steel-main-gate",
     "categoryName": "Steel Main Gate",
@@ -255,10 +296,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Italian rolling track with double-bearing stainless steel wheels",
-    "automation": "Fully motorized remote automation ready with safety infrared sensors"
+    "automation": "Fully motorized remote automation ready with safety infrared sensors",
+    "name": "Double Door Steel Gate",
+    "category_display": "Steel Main Gate",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-20T00:00:00.000Z"
   },
   {
-    "id": "prod-9",
+    "id": "12",
     "title": "Entrance Steel Door For Home",
     "category": "steel-door",
     "categoryName": "Steel Door",
@@ -279,10 +325,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Multi-point European mortise deadbolt system & tamper-proof ball-bearing hinges",
-    "automation": "Biometric fingerprint scanner, RFID card, and motorized smart lock ready"
+    "automation": "Biometric fingerprint scanner, RFID card, and motorized smart lock ready",
+    "name": "Entrance Steel Door For Home",
+    "category_display": "Steel Door",
+    "outer_frame": "14 Gauge (14G) double galvanized steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-15T00:00:00.000Z"
   },
   {
-    "id": "prod-iron-1",
+    "id": "13",
     "title": "Wrought Iron Luxury Main Gate",
     "category": "iron-main-gate",
     "categoryName": "Iron Main Gate",
@@ -303,10 +354,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Handcrafted anti-rust zinc-chromate primer with PU coating",
     "hardware": "Heavy-duty greaseable brass-core pivot hinges and Italian floor track",
-    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors"
+    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors",
+    "name": "Wrought Iron Luxury Main Gate",
+    "category_display": "Iron Main Gate",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-02-12T00:00:00.000Z"
   },
   {
-    "id": "prod-iron-2",
+    "id": "14",
     "title": "Modern Cast Iron Sliding Gate",
     "category": "iron-main-gate",
     "categoryName": "Iron Main Gate",
@@ -327,10 +383,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Handcrafted anti-rust zinc-chromate primer with PU coating",
     "hardware": "Heavy-duty greaseable brass-core pivot hinges and Italian floor track",
-    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors"
+    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors",
+    "name": "Modern Cast Iron Sliding Gate",
+    "category_display": "Iron Main Gate",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-02-08T00:00:00.000Z"
   },
   {
-    "id": "prod-iron-3",
+    "id": "15",
     "title": "Decorative Wrought Iron Double Gate",
     "category": "iron-main-gate",
     "categoryName": "Iron Main Gate",
@@ -351,10 +412,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Handcrafted anti-rust zinc-chromate primer with PU coating",
     "hardware": "Heavy-duty greaseable brass-core pivot hinges and Italian floor track",
-    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors"
+    "automation": "Compatible with high-torque Italian automated sliding & double-swing gear motors",
+    "name": "Decorative Wrought Iron Double Gate",
+    "category_display": "Iron Main Gate",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-25T00:00:00.000Z"
   },
   {
-    "id": "prod-powder-1",
+    "id": "16",
     "title": "Matte Black Powder Coated Modern Gate",
     "category": "powder-coated-gates",
     "categoryName": "Powder Coated Gates",
@@ -375,10 +441,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Architectural AkzoNobel 7-tank powder coated",
     "hardware": "Marine-grade stainless-steel hinges and self-lubricating nylon guide rollers",
-    "automation": "Universal mounting brackets for motorized swing & sliding gate automation"
+    "automation": "Universal mounting brackets for motorized swing & sliding gate automation",
+    "name": "Matte Black Powder Coated Modern Gate",
+    "category_display": "Powder Coated Gates",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-02-14T00:00:00.000Z"
   },
   {
-    "id": "prod-powder-2",
+    "id": "17",
     "title": "Antique Bronze Powder Coated Steel Gate",
     "category": "powder-coated-gates",
     "categoryName": "Powder Coated Gates",
@@ -399,10 +470,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Architectural AkzoNobel 7-tank powder coated",
     "hardware": "Marine-grade stainless-steel hinges and self-lubricating nylon guide rollers",
-    "automation": "Universal mounting brackets for motorized swing & sliding gate automation"
+    "automation": "Universal mounting brackets for motorized swing & sliding gate automation",
+    "name": "Antique Bronze Powder Coated Steel Gate",
+    "category_display": "Powder Coated Gates",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-02-02T00:00:00.000Z"
   },
   {
-    "id": "prod-powder-3",
+    "id": "18",
     "title": "Wood-Grain Powder Coated Profile Gate",
     "category": "powder-coated-gates",
     "categoryName": "Powder Coated Gates",
@@ -423,10 +499,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Architectural AkzoNobel 7-tank powder coated",
     "hardware": "Marine-grade stainless-steel hinges and self-lubricating nylon guide rollers",
-    "automation": "Universal mounting brackets for motorized swing & sliding gate automation"
+    "automation": "Universal mounting brackets for motorized swing & sliding gate automation",
+    "name": "Wood-Grain Powder Coated Profile Gate",
+    "category_display": "Powder Coated Gates",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-18T00:00:00.000Z"
   },
   {
-    "id": "prod-10",
+    "id": "19",
     "title": "SS304 Modern Laser Cut Steel Gate",
     "category": "steel-main-gate",
     "categoryName": "Steel Main Gate",
@@ -447,10 +528,15 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Italian rolling track with double-bearing stainless steel wheels",
-    "automation": "Fully motorized remote automation ready with safety infrared sensors"
+    "automation": "Fully motorized remote automation ready with safety infrared sensors",
+    "name": "SS304 Modern Laser Cut Steel Gate",
+    "category_display": "Steel Main Gate",
+    "outer_frame": "14 Gauge (14G) high-tensile steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-22T00:00:00.000Z"
   },
   {
-    "id": "prod-11",
+    "id": "20",
     "title": "Heavy Security Exterior Steel Door",
     "category": "steel-door",
     "categoryName": "Steel Door",
@@ -471,6 +557,11 @@
     "usage": "Residential villas, luxury bungalows, and commercial entrances",
     "finish": "Powder coated or high-gloss weather-resistant painted",
     "hardware": "Multi-point European mortise deadbolt system & tamper-proof ball-bearing hinges",
-    "automation": "Biometric fingerprint scanner, RFID card, and motorized smart lock ready"
+    "automation": "Biometric fingerprint scanner, RFID card, and motorized smart lock ready",
+    "name": "Heavy Security Exterior Steel Door",
+    "category_display": "Steel Door",
+    "outer_frame": "14 Gauge (14G) double galvanized steel frame",
+    "inner_frame": "16 Gauge (16G) reinforced steel inner tubular frame",
+    "created_at": "2026-01-12T00:00:00.000Z"
   }
 ]

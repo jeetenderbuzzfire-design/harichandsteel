@@ -179,7 +179,7 @@ ${getBanner('About Us', 'About Us', 'Welcome to Harichand Steel, where innovatio
             <p>Connect with our engineering specialists for custom fabrication, on-site measurements, and competitive pricing.</p>
           </div>
           <div class="cta-banner-buttons">
-            <a href="https://wa.me/919911690126" class="btn btn-whatsapp btn-lg btn-pulse" target="_blank" rel="noopener">
+            <a href="https://wa.me/919870433868" class="btn btn-whatsapp btn-lg btn-pulse" target="_blank" rel="noopener">
               <i class="fab fa-whatsapp"></i> CONTACT US
             </a>
             <a href="tel:+919870433868" class="btn btn-secondary btn-lg">
@@ -384,7 +384,7 @@ ${getBanner('Our Products', 'Our Products', 'What Product We Provide - Engineere
             <p>Get instant assistance with gate sizing, material specifications, and doorstep measurements across Delhi NCR.</p>
           </div>
           <div class="cta-banner-buttons">
-            <a href="https://wa.me/919911690126" class="btn btn-whatsapp btn-lg btn-pulse" target="_blank" rel="noopener">
+            <a href="https://wa.me/919870433868" class="btn btn-whatsapp btn-lg btn-pulse" target="_blank" rel="noopener">
               <i class="fab fa-whatsapp"></i> CONTACT US
             </a>
             <a href="tel:+919870433868" class="btn btn-secondary btn-lg">

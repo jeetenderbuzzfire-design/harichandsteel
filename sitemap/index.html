@@ -4,10 +4,21 @@
 <head>
   <script>
     (function () {
-      var isGithub = window.location.hostname.endsWith('github.io');
-      var repo = window.location.pathname.split('/')[1] || 'harichandsteel';
+      var hostname = window.location.hostname;
+      var pathname = window.location.pathname;
+      var isGithub = hostname.endsWith('github.io');
+      var repo = pathname.split('/')[1] || 'harichandsteel';
       var baseHref = isGithub ? '/' + repo + '/' : '/';
       document.write('<base href="' + baseHref + '">');
+
+      // Instant client-side redirect: strip .html on GitHub Pages & static hosts
+      if (pathname.endsWith('.html') || pathname.endsWith('.htm')) {
+        var clean = pathname.replace(/\.html?$/i, '');
+        var target = (clean.endsWith('/index') || clean === '/index' || clean === '/' + repo + '/index' || clean === '/' + repo)
+          ? baseHref
+          : clean + '/';
+        window.location.replace(target + window.location.search + window.location.hash);
+      }
     })();
   </script>
   <meta charset="UTF-8">
@@ -15,15 +26,15 @@
   <title>Sitemap - HARICHAND STEEL</title>
   <meta name="description"
     content="HTML Sitemap for Harichand Steel. Easily browse all pages, gate models, product categories, and articles.">
-  <link rel="canonical" href="https://harichandsteel.com/../sitemap/">
+  <link rel="canonical" href="https://harichandsteel.com/sitemap/">
 
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[{"@type":["Organization","Person"],"@id":"https://harichandsteel.com/#person","name":"HARICHAND STEEL","url":"https://harichandsteel.com","address":{"@type":"PostalAddress","streetAddress":"L-11, 25 Feet Rd, Chanakya Place II, Block H, Uttam Nagar, Sitapuri,","addressLocality":"janakpuri","addressRegion":"delhi","postalCode":"110046","addressCountry":"india"},"logo":{"@type":"ImageObject","@id":"https://harichandsteel.com/#logo","url":"https://harichandsteel.com/wp-content/uploads/2024/07/cropped-HS-SIGN-1.jpeg","contentUrl":"https://harichandsteel.com/wp-content/uploads/2024/07/cropped-HS-SIGN-1.jpeg","caption":"HARICHAND STEEL","inLanguage":"en-US","width":"1279","height":"914"},"image":{"@id":"https://harichandsteel.com/#logo"}},{"@type":"WebSite","@id":"https://harichandsteel.com/#website","url":"https://harichandsteel.com","name":"HARICHAND STEEL","publisher":{"@id":"https://harichandsteel.com/#person"},"inLanguage":"en-US"},{"@type":"BreadcrumbList","@id":"https://harichandsteel.com/sitemap/#breadcrumb","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://harichandsteel.com","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://harichandsteel.com/sitemap/","name":"Sitemap"}}]},{"@type":"WebPage","@id":"https://harichandsteel.com/sitemap/#webpage","url":"https://harichandsteel.com/sitemap/","name":"Sitemap - HARICHAND STEEL","datePublished":"2026-01-14T09:05:45+00:00","dateModified":"2026-01-14T09:05:46+00:00","isPartOf":{"@id":"https://harichandsteel.com/#website"},"inLanguage":"en-US","breadcrumb":{"@id":"https://harichandsteel.com/sitemap/#breadcrumb"}},{"@type":"Person","@id":"https://harichandsteel.com/author/ritwiksachdeva19/","name":"ritwiksachdeva19","url":"https://harichandsteel.com/author/ritwiksachdeva19/","image":{"@type":"ImageObject","@id":"https://secure.gravatar.com/avatar/10bb07e990527e85b358d9d5ae5c9ee633a8165cb27af9769094c1351c71e16e?s=96&amp;d=mm&amp;r=g","url":"https://secure.gravatar.com/avatar/10bb07e990527e85b358d9d5ae5c9ee633a8165cb27af9769094c1351c71e16e?s=96&amp;d=mm&amp;r=g","caption":"ritwiksachdeva19","inLanguage":"en-US"},"sameAs":["https://harichandsteel.com"]},{"@type":"Article","headline":"Sitemap - HARICHAND STEEL","datePublished":"2026-01-14T09:05:45+00:00","dateModified":"2026-01-14T09:05:46+00:00","author":{"@id":"https://harichandsteel.com/author/ritwiksachdeva19/","name":"ritwiksachdeva19"},"publisher":{"@id":"https://harichandsteel.com/#person"},"name":"Sitemap - HARICHAND STEEL","@id":"https://harichandsteel.com/sitemap/#richSnippet","isPartOf":{"@id":"https://harichandsteel.com/sitemap/#webpage"},"inLanguage":"en-US","mainEntityOfPage":{"@id":"https://harichandsteel.com/sitemap/#webpage"}}]}
   </script>
   <!-- Favicons -->
-  <link rel="icon" href="../images/favicon-32.jpeg" sizes="32x32">
-  <link rel="icon" href="../images/favicon-32.jpeg" sizes="32x32">
-  <link rel="apple-touch-icon" href="../images/favicon-32.jpeg">
+  <link rel="icon" href="images/favicon-32.jpeg" sizes="32x32">
+  <link rel="icon" href="images/favicon-32.jpeg" sizes="32x32">
+  <link rel="apple-touch-icon" href="images/favicon-32.jpeg">
 
   <!-- Google Fonts: Oswald & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +44,7 @@
     rel="stylesheet">
 
   <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="../css/all.min.css">
+  <link rel="stylesheet" href="css/all.min.css">
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="./css/style.css">
@@ -81,8 +92,8 @@
     <div class="container">
       <div class="nav-wrapper">
         <!-- Logo -->
-        <a href="../index.html" class="brand-logo" aria-label="Harichand Steel Home">
-          <img src="../images/logo.jpeg" alt="HARICHAND STEEL"
+        <a href="./" class="brand-logo" aria-label="Harichand Steel Home">
+          <img src="images/logo.jpeg" alt="HARICHAND STEEL"
             onerror="this.src='https://harichandsteel.com/wp-content/uploads/2024/07/cropped-HS-SIGN-1-69x49.jpeg'">
           <div class="brand-text">
             <span class="brand-title">HARICHAND STEEL</span>
@@ -94,22 +105,22 @@
         <nav class="main-nav" id="mainNav">
           <ul class="nav-menu">
             <li class="nav-item">
-              <a href="../index.html" class="nav-link active">Home</a>
+              <a href="./" class="nav-link active">Home</a>
             </li>
             <li class="nav-item">
-              <a href="../our-products.html" class="nav-link ">Our Products</a>
+              <a href="our-products/" class="nav-link ">Our Products</a>
             </li>
             <li class="nav-item">
-              <a href="../about-us.html" class="nav-link ">About us</a>
+              <a href="about-us/" class="nav-link ">About us</a>
             </li>
             <li class="nav-item">
-              <a href="../contact.html" class="nav-link ">Contact</a>
+              <a href="contact/" class="nav-link ">Contact</a>
             </li>
             <li class="nav-item">
-              <a href="../news.html" class="nav-link ">News</a>
+              <a href="news/" class="nav-link ">News</a>
             </li>
             <li class="nav-item has-dropdown">
-              <a href="../product.html" class="nav-link ">
+              <a href="product/" class="nav-link ">
                 Product <i class="fas fa-chevron-down arrow"></i>
               </a>
               <ul class="dropdown-menu">
@@ -149,7 +160,7 @@
   <div class="page-header-banner">
     <div class="container">
       <nav class="breadcrumb-nav">
-        <a href="../index.html">Home</a>
+        <a href="./">Home</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
         <span>Sitemap</span>
       </nav>
@@ -166,21 +177,21 @@
           <h2 class="sitemap-title"><i class="fas fa-file-alt"
               style="color: var(--color-primary); margin-right: 10px;"></i> Main Pages</h2>
           <div class="sitemap-list">
-            <div class="sitemap-item"><a href="../index.html">Home Page</a> <span class="sitemap-date">Updated 2026</span>
+            <div class="sitemap-item"><a href="./">Home Page</a> <span class="sitemap-date">Updated 2026</span>
             </div>
-            <div class="sitemap-item"><a href="../about-us.html">About Us</a> <span class="sitemap-date">Company
+            <div class="sitemap-item"><a href="about-us/">About Us</a> <span class="sitemap-date">Company
                 Profile</span></div>
-            <div class="sitemap-item"><a href="../our-products.html">Our Products</a> <span class="sitemap-date">Gate
+            <div class="sitemap-item"><a href="our-products/">Our Products</a> <span class="sitemap-date">Gate
                 Portfolio</span></div>
-            <div class="sitemap-item"><a href="../product.html">Product Catalog</a> <span class="sitemap-date">32+
+            <div class="sitemap-item"><a href="product/">Product Catalog</a> <span class="sitemap-date">32+
                 Models</span></div>
-            <div class="sitemap-item"><a href="../news.html">News &amp; Insights</a> <span class="sitemap-date">Latest
+            <div class="sitemap-item"><a href="news/">News &amp; Insights</a> <span class="sitemap-date">Latest
                 Articles</span></div>
-            <div class="sitemap-item"><a href="../contact.html">Contact Us</a> <span class="sitemap-date">Map &amp;
+            <div class="sitemap-item"><a href="contact/">Contact Us</a> <span class="sitemap-date">Map &amp;
                 Workshop</span></div>
-            <div class="sitemap-item"><a href="../privacy-policy.html">Privacy Policy</a> <span
+            <div class="sitemap-item"><a href="privacy-policy/">Privacy Policy</a> <span
                 class="sitemap-date">Legal</span></div>
-            <div class="sitemap-item"><a href="../sitemap.html">HTML Sitemap</a> <span class="sitemap-date">Current
+            <div class="sitemap-item"><a href="sitemap/">HTML Sitemap</a> <span class="sitemap-date">Current
                 Page</span></div>
           </div>
         </div>
@@ -208,15 +219,15 @@
           <h2 class="sitemap-title"><i class="fas fa-newspaper"
               style="color: var(--color-primary); margin-right: 10px;"></i> Published Guides &amp; Posts</h2>
           <div class="sitemap-list">
-            <div class="sitemap-item"><a href="../steel-gate-design.html">Steel Gate Design – Modern Architecture &amp;
+            <div class="sitemap-item"><a href="steel-gate-design/">Steel Gate Design – Modern Architecture &amp;
                 Prices</a> <span class="sitemap-date">(Jan 19, 2026)</span></div>
-            <div class="sitemap-item"><a href="../best-steel-gate-manufacturer-in-delhi.html">Best Steel Gate Manufacturer
+            <div class="sitemap-item"><a href="best-steel-gate-manufacturer-in-delhi/">Best Steel Gate Manufacturer
                 in Delhi | Premium Gates</a> <span class="sitemap-date">(Feb 10, 2026)</span></div>
-            <div class="sitemap-item"><a href="../aluminium-profile-gate-manufacturer-in-janakpuri.html">Aluminium Profile
+            <div class="sitemap-item"><a href="aluminium-profile-gate-manufacturer-in-janakpuri/">Aluminium Profile
                 Gate Manufacturer in Janakpuri</a> <span class="sitemap-date">(Nov 6, 2024)</span></div>
-            <div class="sitemap-item"><a href="../news.html#prithviraj-road">Aluminum Profile Gate Manufacturer in
+            <div class="sitemap-item"><a href="news/#prithviraj-road">Aluminum Profile Gate Manufacturer in
                 Prithviraj Road</a> <span class="sitemap-date">(Nov 6, 2024)</span></div>
-            <div class="sitemap-item"><a href="../news.html#best-profile-gate">Best Aluminum Profile Gate Manufacturer</a>
+            <div class="sitemap-item"><a href="news/#best-profile-gate">Best Aluminum Profile Gate Manufacturer</a>
               <span class="sitemap-date">(Oct 3, 2024)</span>
             </div>
           </div>
@@ -233,8 +244,8 @@
         <div class="footer-grid">
           <!-- Col 1: Brand & Contact -->
           <div class="footer-col">
-            <a href="../index.html" class="brand-logo" style="margin-bottom: 18px;">
-              <img src="../images/logo.jpeg" alt="HARICHAND STEEL"
+            <a href="./" class="brand-logo" style="margin-bottom: 18px;">
+              <img src="images/logo.jpeg" alt="HARICHAND STEEL"
                 onerror="this.src='https://harichandsteel.com/wp-content/uploads/2024/07/cropped-HS-SIGN-1-69x49.jpeg'">
               <div class="brand-text">
                 <span class="brand-title">HARICHAND STEEL</span>
@@ -274,7 +285,7 @@
               <a href="product-category/steel-door/"><i class="fas fa-chevron-right"></i> Steel Door</a>
               <a href="product-category/powder-coated-gates/"><i class="fas fa-chevron-right"></i> Powder Coated
                 Gates</a>
-              <a href="../product.html"><i class="fas fa-chevron-right"></i> All Products</a>
+              <a href="product/"><i class="fas fa-chevron-right"></i> All Products</a>
             </div>
           </div>
 
@@ -282,12 +293,12 @@
           <div class="footer-col">
             <h4>About Us</h4>
             <div class="footer-links-list">
-              <a href="../about-us.html"><i class="fas fa-chevron-right"></i> About Us</a>
-              <a href="../about-us.html"><i class="fas fa-chevron-right"></i> OUR MOTO</a>
-              <a href="../about-us.html"><i class="fas fa-chevron-right"></i> WHY US</a>
-              <a href="../about-us.html"><i class="fas fa-chevron-right"></i> OUR TEAM</a>
-              <a href="../news.html"><i class="fas fa-chevron-right"></i> News & Insights</a>
-              <a href="../contact.html"><i class="fas fa-chevron-right"></i> Contact Us</a>
+              <a href="about-us/"><i class="fas fa-chevron-right"></i> About Us</a>
+              <a href="about-us/"><i class="fas fa-chevron-right"></i> OUR MOTO</a>
+              <a href="about-us/"><i class="fas fa-chevron-right"></i> WHY US</a>
+              <a href="about-us/"><i class="fas fa-chevron-right"></i> OUR TEAM</a>
+              <a href="news/"><i class="fas fa-chevron-right"></i> News & Insights</a>
+              <a href="contact/"><i class="fas fa-chevron-right"></i> Contact Us</a>
             </div>
           </div>
 
@@ -387,8 +398,8 @@
     </div>
   </div>
 
-  <script src="../js/cms-data.js"></script>
-  <script src="../js/main.js"></script>
+  <script src="js/cms-data.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>

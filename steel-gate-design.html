@@ -4,10 +4,21 @@
 <head>
   <script>
     (function () {
-      var isGithub = window.location.hostname.endsWith('github.io');
-      var repo = window.location.pathname.split('/')[1] || 'harichandsteel';
+      var hostname = window.location.hostname;
+      var pathname = window.location.pathname;
+      var isGithub = hostname.endsWith('github.io');
+      var repo = pathname.split('/')[1] || 'harichandsteel';
       var baseHref = isGithub ? '/' + repo + '/' : '/';
       document.write('<base href="' + baseHref + '">');
+
+      // Instant client-side redirect: strip .html on GitHub Pages & static hosts
+      if (pathname.endsWith('.html') || pathname.endsWith('.htm')) {
+        var clean = pathname.replace(/\.html?$/i, '');
+        var target = (clean.endsWith('/index') || clean === '/index' || clean === '/' + repo + '/index' || clean === '/' + repo)
+          ? baseHref
+          : clean + '/';
+        window.location.replace(target + window.location.search + window.location.hash);
+      }
     })();
   </script>
   <meta charset="UTF-8">

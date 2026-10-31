@@ -4,6 +4,8 @@
  * Integrated with Harichand Steel CMS Engine
  */
 
+const BASE_PATH = (typeof document !== 'undefined' && document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/';
+
 document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initStickyHeader();
@@ -338,7 +340,7 @@ function initProductFilter() {
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <a href="product/">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product-category/${currentFilter}/">${breadcrumbLabel}</a>
+            <a href="product-category/${currentFilter}/">${breadcrumbLabel}</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Page ${page}</span>
           `;

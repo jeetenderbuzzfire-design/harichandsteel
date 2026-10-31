@@ -175,7 +175,7 @@ function initProductFilter() {
   // Helper: extract page number from clean URL pathname or query parameters
   function getPageFromUrl() {
     const path = window.location.pathname || '';
-    const match = path.match(/\/product\/page\/(\d+)\/?/);
+    const match = path.match(/\/(?:product|product-category\/[^\/]+)\/page\/(\d+)\/?/i);
     if (match && match[1]) {
       const p = parseInt(match[1], 10);
       if (!isNaN(p) && p >= 1) return p;
@@ -186,6 +186,17 @@ function initProductFilter() {
       if (!isNaN(p) && p >= 1) return p;
     }
     return 1;
+  }
+
+  // Helper: extract category slug from clean URL pathname (/product-category/:slug/) or hash
+  function getCategoryFromUrl() {
+    const path = window.location.pathname || '';
+    const catMatch = path.match(/\/product-category\/([a-zA-Z0-9_-]+)/i);
+    if (catMatch && catMatch[1]) {
+      return catMatch[1].toLowerCase();
+    }
+    const hash = window.location.hash ? window.location.hash.substring(1).toLowerCase() : '';
+    return hash;
   }
 
   filterContainers.forEach(container => {
@@ -228,25 +239,62 @@ function initProductFilter() {
     let currentFilter = 'all';
     let currentPage = paginationContainer ? getPageFromUrl() : 1;
 
+    // Helper: get display label for category
+    function getCategoryLabel(filterKey) {
+      if (!filterKey || filterKey === 'all') return 'All Products';
+      const btn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === filterKey);
+      if (btn) {
+        return btn.getAttribute('data-label') || btn.textContent.replace(/\s*\(\d+\)\s*$/, '').trim();
+      }
+      return filterKey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+
     // 3. Render Breadcrumbs
     function renderBreadcrumbs(page) {
       if (!breadcrumbNav) return;
-      if (page > 1) {
-        breadcrumbNav.innerHTML = `
-          <a href="index.html">Home</a>
-          <span class="sep"><i class="fas fa-chevron-right"></i></span>
-          <a href="product.html">Product</a>
-          <span class="sep"><i class="fas fa-chevron-right"></i></span>
-          <span>Page ${page}</span>
-        `;
-        document.title = `Product - Page ${page} - HARICHAND STEEL`;
+      const isFiltered = currentFilter && currentFilter !== 'all';
+      const categoryLabel = getCategoryLabel(currentFilter);
+
+      if (isFiltered) {
+        if (page > 1) {
+          breadcrumbNav.innerHTML = `
+            <a href="index.html">Home</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <a href="product.html">Product</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <a href="/product-category/${currentFilter}/">${categoryLabel}</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <span>Page ${page}</span>
+          `;
+          document.title = `${categoryLabel} - Page ${page} - HARICHAND STEEL`;
+        } else {
+          breadcrumbNav.innerHTML = `
+            <a href="index.html">Home</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <a href="product.html">Product</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <span>${categoryLabel}</span>
+          `;
+          document.title = `${categoryLabel} - HARICHAND STEEL`;
+        }
       } else {
-        breadcrumbNav.innerHTML = `
-          <a href="index.html">Home</a>
-          <span class="sep"><i class="fas fa-chevron-right"></i></span>
-          <span>Product</span>
-        `;
-        document.title = 'Product - HARICHAND STEEL';
+        if (page > 1) {
+          breadcrumbNav.innerHTML = `
+            <a href="index.html">Home</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <a href="product.html">Product</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <span>Page ${page}</span>
+          `;
+          document.title = `Product - Page ${page} - HARICHAND STEEL`;
+        } else {
+          breadcrumbNav.innerHTML = `
+            <a href="index.html">Home</a>
+            <span class="sep"><i class="fas fa-chevron-right"></i></span>
+            <span>Product</span>
+          `;
+          document.title = 'Product - HARICHAND STEEL';
+        }
       }
     }
 
@@ -265,7 +313,13 @@ function initProductFilter() {
 
       // [←] Previous button
       const isFirst = page <= 1;
-      const prevUrl = page > 2 ? `/product/page/${page - 1}` : '/product';
+      let prevUrl;
+      if (currentFilter && currentFilter !== 'all') {
+        prevUrl = page > 2 ? `/product-category/${currentFilter}/page/${page - 1}/` : `/product-category/${currentFilter}/`;
+      } else {
+        prevUrl = page > 2 ? `/product/page/${page - 1}` : '/product';
+      }
+
       html += `
         <li class="page-item ${isFirst ? 'disabled' : ''}">
           <a href="${isFirst ? '#' : prevUrl}" class="page-link" data-page="${page - 1}" aria-label="Previous Page" ${isFirst ? 'tabindex="-1" aria-disabled="true"' : ''}>
@@ -277,7 +331,12 @@ function initProductFilter() {
       // [1] [2] [3] ... [totalPages] Numbered buttons
       for (let p = 1; p <= totalPages; p++) {
         const isActive = p === page;
-        const pageUrl = p === 1 ? '/product' : `/product/page/${p}`;
+        let pageUrl;
+        if (currentFilter && currentFilter !== 'all') {
+          pageUrl = p === 1 ? `/product-category/${currentFilter}/` : `/product-category/${currentFilter}/page/${p}/`;
+        } else {
+          pageUrl = p === 1 ? '/product' : `/product/page/${p}`;
+        }
         html += `
           <li class="page-item ${isActive ? 'active' : ''}" ${isActive ? 'aria-current="page"' : ''}>
             <a href="${pageUrl}" class="page-link" data-page="${p}">${p}</a>
@@ -287,7 +346,13 @@ function initProductFilter() {
 
       // [→] Next button
       const isLast = page >= totalPages;
-      const nextUrl = `/product/page/${page + 1}`;
+      let nextUrl;
+      if (currentFilter && currentFilter !== 'all') {
+        nextUrl = `/product-category/${currentFilter}/page/${page + 1}/`;
+      } else {
+        nextUrl = `/product/page/${page + 1}`;
+      }
+
       html += `
         <li class="page-item ${isLast ? 'disabled' : ''}">
           <a href="${isLast ? '#' : nextUrl}" class="page-link" data-page="${page + 1}" aria-label="Next Page" ${isLast ? 'tabindex="-1" aria-disabled="true"' : ''}>
@@ -369,10 +434,14 @@ function initProductFilter() {
 
         // Update Clean URL via history.pushState
         if (pushHistory && window.history && window.history.pushState) {
-          const cleanPath = currentPage > 1 ? `/product/page/${currentPage}` : '/product';
-          const cleanUrl = currentFilter && currentFilter !== 'all' ? `${cleanPath}#${currentFilter}` : cleanPath;
+          let cleanUrl;
+          if (currentFilter && currentFilter !== 'all') {
+            cleanUrl = currentPage > 1 ? `/product-category/${currentFilter}/page/${currentPage}/` : `/product-category/${currentFilter}/`;
+          } else {
+            cleanUrl = currentPage > 1 ? `/product/page/${currentPage}` : '/product';
+          }
           try {
-            const currentFullPath = window.location.pathname + window.location.hash;
+            const currentFullPath = window.location.pathname + window.location.search;
             if (currentFullPath !== cleanUrl) {
               window.history.pushState({ page: currentPage, filter: currentFilter }, '', cleanUrl);
             }
@@ -409,8 +478,7 @@ function initProductFilter() {
           if (currentFilter === 'all') {
             countSummary.innerHTML = `Showing all <strong>${visibleCount}</strong> designs in catalogue`;
           } else {
-            const activeBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === currentFilter);
-            const activeLabel = activeBtn ? (activeBtn.getAttribute('data-label') || activeBtn.textContent) : currentFilter;
+            const activeLabel = getCategoryLabel(currentFilter);
             countSummary.innerHTML = `Showing <strong>${visibleCount}</strong> of <strong>${cards.length}</strong> results in <em>${activeLabel}</em>`;
           }
         }
@@ -435,11 +503,18 @@ function initProductFilter() {
     });
 
     // 7. Initial Active State Selection
-    const hash = window.location.hash ? window.location.hash.substring(1) : '';
+    const initialCategory = getCategoryFromUrl();
     let initialBtn = null;
-    if (hash) {
-      initialBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === hash);
-      if (initialBtn) currentFilter = hash;
+    if (initialCategory) {
+      initialBtn = Array.from(filterBtns).find(b => b.getAttribute('data-filter') === initialCategory);
+      if (initialBtn) {
+        currentFilter = initialCategory;
+        // If arrived via old hash URL like /product.html#steel-door or /product#steel-door, cleanly upgrade URL
+        if (window.location.hash && window.history && window.history.replaceState) {
+          const cleanUrl = `/product-category/${currentFilter}/`;
+          window.history.replaceState({ page: currentPage, filter: currentFilter }, '', cleanUrl);
+        }
+      }
     }
     if (!initialBtn) {
       initialBtn = container.querySelector('.filter-btn.active') || filterBtns[0];
@@ -453,10 +528,11 @@ function initProductFilter() {
     if (!window._cataloguePopstateBound && paginationContainer) {
       window._cataloguePopstateBound = true;
       window.addEventListener('popstate', (e) => {
+        const catFromUrl = getCategoryFromUrl();
+        const stateFilter = (e.state && e.state.filter) || catFromUrl || 'all';
         const statePage = (e.state && typeof e.state.page === 'number') ? e.state.page : getPageFromUrl();
-        const stateFilter = (e.state && e.state.filter) || (window.location.hash ? window.location.hash.substring(1) : 'all');
 
-        currentFilter = stateFilter || 'all';
+        currentFilter = stateFilter;
         currentPage = statePage;
 
         filterBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-filter') === currentFilter));
@@ -465,7 +541,7 @@ function initProductFilter() {
     }
   });
 
-  // Global hashchange listener so header dropdown links filter dynamically
+  // Global hashchange listener so old anchor links filter and upgrade URL dynamically
   if (!window._catalogueHashListenerBound) {
     window._catalogueHashListenerBound = true;
     window.addEventListener('hashchange', () => {
@@ -479,9 +555,6 @@ function initProductFilter() {
   }
 }
 
-/* ==========================================================================
-   QUICK QUOTE ESTIMATOR FORM
-   ========================================================================== */
 function initQuoteEstimator() {
   const form = document.getElementById('quoteEstimatorForm');
   if (!form) return;

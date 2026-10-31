@@ -4,6 +4,57 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+  // 0. Authentication Guard & Session Verification
+  async function checkAdminAuth() {
+    try {
+      const sessionKey = localStorage.getItem('hs_admin_session') || localStorage.getItem('hs_admin_api_key');
+      const res = await fetch('/api/admin/check-auth', {
+        headers: sessionKey ? { 'Authorization': 'Bearer ' + sessionKey, 'x-admin-key': sessionKey } : {}
+      });
+      const data = await res.json();
+      if (!data.authenticated) {
+        localStorage.removeItem('hs_admin_session');
+        localStorage.removeItem('hs_admin_api_key');
+        const currentPath = window.location.pathname + window.location.search;
+        window.location.href = '/admin/login?redirect=' + encodeURIComponent(currentPath);
+        return false;
+      }
+      if (data.username) {
+        const nameElem = document.querySelector('.user-name');
+        if (nameElem) nameElem.textContent = data.username;
+      }
+      return true;
+    } catch (e) {
+      return true;
+    }
+  }
+  checkAdminAuth();
+
+  // Logout Handlers
+  async function handleAdminLogout(e) {
+    if (e) e.preventDefault();
+    if (confirm('Are you sure you want to log out of the admin panel?')) {
+      try {
+        await fetch('/api/admin/logout', { method: 'POST' });
+      } catch (_) {}
+      localStorage.removeItem('hs_admin_session');
+      localStorage.removeItem('hs_admin_api_key');
+      window.location.href = '/admin/login';
+    }
+  }
+
+  const btnLogoutSidebar = document.getElementById('btnAdminLogout');
+  if (btnLogoutSidebar) {
+    btnLogoutSidebar.addEventListener('click', handleAdminLogout);
+  }
+
+  const btnLogoutTopbar = document.getElementById('topbarLogoutBtn');
+  if (btnLogoutTopbar) {
+    btnLogoutTopbar.addEventListener('click', handleAdminLogout);
+  }
+
+  // --- End Auth Integration ---
+
   // Check CMS availability
   if (typeof CMS === 'undefined') {
     console.error('CMS module not found! Ensure js/cms-data.js is loaded before js/admin.js.');

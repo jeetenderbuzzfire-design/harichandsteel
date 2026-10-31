@@ -108,13 +108,68 @@ button, input, select, textarea {
 /* ==========================================================================
    TOP BAR
    ========================================================================== */
-.topbar {
+.topbar,
+.top-bar {
   background: #090c10;
   color: #cbd5e1;
   font-size: 0.85rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 102;
+}
+
+.topbar .container,
+.top-bar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.top-bar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.topbar-left,
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-right,
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.info-pill,
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.info-pill i,
+.contact-pill i {
+  color: var(--color-primary-light);
+}
+
+.contact-pill:hover {
+  color: #ffffff;
+}
+
+.top-bar-content .divider {
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
 }
 
 .topbar .container {
@@ -3715,7 +3770,8 @@ img, video, iframe, embed, object {
    BREAKPOINT: Standard Tablets (<= 960px)
    ========================================== */
 @media (max-width: 960px) {
-  .topbar {
+  .topbar,
+  .top-bar {
     display: none !important;
   }
 

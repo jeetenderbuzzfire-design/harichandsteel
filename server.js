@@ -13,19 +13,76 @@ const db = require('./db.js');
 const PORT = process.env.PORT || 8080;
 const ALT_PORT = 3000;
 const ROOT_DIR = __dirname;
+const crypto = require('crypto');
 const ADMIN_API_KEY = process.env.ADMIN_API_KEY || 'hs_admin_secret_key_2026';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'buzzspire.info@gmail.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Harichand@2004';
 
-// Helper to validate administrative access
+// Helper to dynamically read admin credentials from .env or memory on every request
+function getAdminCredentials() {
+  try {
+    const envPath = path.join(ROOT_DIR, '.env');
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf8');
+      const lines = content.split(/\r?\n/);
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('#') || !trimmed.includes('=')) continue;
+        const [k, ...v] = trimmed.split('=');
+        const key = k.trim();
+        const val = v.join('=').trim().replace(/^['"](.*)['"]$/, '$1');
+        if (key === 'ADMIN_USERNAME') process.env.ADMIN_USERNAME = val;
+        if (key === 'ADMIN_PASSWORD') process.env.ADMIN_PASSWORD = val;
+      }
+    }
+  } catch (_) {}
+
+  return {
+    username: (process.env.ADMIN_USERNAME || 'buzzspire.info@gmail.com').trim(),
+    password: (process.env.ADMIN_PASSWORD || 'Harichand@2004').trim()
+  };
+}
+
+// In-memory active admin sessions: token -> { username, createdAt }
+const activeAdminSessions = new Map();
+
+// Helper to parse cookies from request
+function parseCookies(req) {
+  const list = {};
+  const rc = req.headers.cookie;
+  if (rc) {
+    rc.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+  }
+  return list;
+}
+
+// Helper to validate administrative access (API key OR active session token/cookie)
 function isAuthorized(req) {
   const headerKey = req.headers['x-admin-key'];
   const authHeader = req.headers['authorization'];
-  if (headerKey && headerKey === ADMIN_API_KEY) return true;
+  
+  if (headerKey) {
+    if (headerKey === ADMIN_API_KEY) return true;
+    if (activeAdminSessions.has(headerKey)) return true;
+  }
+  
   if (authHeader) {
     const parts = authHeader.split(' ');
-    if (parts.length === 2 && (parts[0] === 'Bearer' || parts[0] === 'ApiKey') && parts[1] === ADMIN_API_KEY) {
-      return true;
+    if (parts.length === 2 && (parts[0] === 'Bearer' || parts[0] === 'ApiKey')) {
+      if (parts[1] === ADMIN_API_KEY) return true;
+      if (activeAdminSessions.has(parts[1])) return true;
     }
   }
+
+  // Check session cookie
+  const cookies = parseCookies(req);
+  if (cookies.hs_admin_session && activeAdminSessions.has(cookies.hs_admin_session)) {
+    return true;
+  }
+
   return false;
 }
 
@@ -109,7 +166,15 @@ async function requestDispatcher(req, res) {
   // Example: /admin/products/ -> /admin/products
   // Example: /product/aluminium-door-profile-gate/ -> /product/aluminium-door-profile-gate
   // ==========================================
-  if (pathname.length > 1 && pathname.endsWith('/')) {
+  // For /product-category/ paths, enforce trailing slash: /product-category/:slug -> /product-category/:slug/
+  if (pathname.startsWith('/product-category/') || pathname === '/product-category') {
+    if (!pathname.endsWith('/')) {
+      const redirectUrl = pathname + '/' + (parsedUrl.search || '') + (parsedUrl.hash || '');
+      res.writeHead(301, { 'Location': redirectUrl });
+      res.end();
+      return;
+    }
+  } else if (pathname.length > 1 && pathname.endsWith('/')) {
     const cleanPath = pathname.replace(/\/+$/, '');
     const redirectUrl = cleanPath + (parsedUrl.search || '') + (parsedUrl.hash || '');
     res.writeHead(301, { 'Location': redirectUrl });
@@ -173,6 +238,63 @@ async function requestDispatcher(req, res) {
       sendJson(res, 200, { status: "local_fallback", database: "JSON" }, req.method);
     }
     return;
+  }
+
+  // --- /api/admin/login ---
+  if (pathname === '/api/admin/login' && req.method === 'POST') {
+    try {
+      const data = await parseJsonBody(req);
+      const user = (data.username || '').trim();
+      const pass = (data.password || '').trim();
+      const creds = getAdminCredentials();
+
+      if (user.toLowerCase() === creds.username.toLowerCase() && pass === creds.password) {
+        const sessionToken = 'hs_sess_' + crypto.randomBytes(24).toString('hex');
+        activeAdminSessions.set(sessionToken, { username: user, createdAt: Date.now() });
+
+        // Set secure HTTP cookie valid for 7 days
+        res.setHeader('Set-Cookie', `hs_admin_session=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`);
+        return sendJson(res, 200, {
+          success: true,
+          message: 'Login successful',
+          token: sessionToken,
+          apiKey: ADMIN_API_KEY,
+          username: user
+        });
+      } else {
+        return sendJson(res, 401, {
+          success: false,
+          error: 'Invalid username or password'
+        });
+      }
+    } catch (e) {
+      return sendJson(res, 400, { success: false, error: 'Invalid request body' });
+    }
+  }
+
+  // --- /api/admin/check-auth ---
+  if (pathname === '/api/admin/check-auth' && (req.method === 'GET' || req.method === 'HEAD')) {
+    const authorized = isAuthorized(req);
+    let username = 'admin';
+    const cookies = parseCookies(req);
+    if (cookies.hs_admin_session && activeAdminSessions.has(cookies.hs_admin_session)) {
+      username = activeAdminSessions.get(cookies.hs_admin_session).username;
+    }
+    return sendJson(res, 200, { authenticated: authorized, username }, req.method);
+  }
+
+  // --- /api/admin/logout ---
+  if (pathname === '/api/admin/logout' && req.method === 'POST') {
+    const cookies = parseCookies(req);
+    if (cookies.hs_admin_session) {
+      activeAdminSessions.delete(cookies.hs_admin_session);
+    }
+    const headerKey = req.headers['x-admin-key'];
+    if (headerKey && activeAdminSessions.has(headerKey)) {
+      activeAdminSessions.delete(headerKey);
+    }
+    res.setHeader('Set-Cookie', 'hs_admin_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax');
+    return sendJson(res, 200, { success: true, message: 'Logged out successfully' });
   }
 
   // --- /api/products ---
@@ -391,6 +513,21 @@ async function requestDispatcher(req, res) {
   // 4. NESTED ASSET SERVING FOR /product/ & /admin/
   // ==========================================
 
+  // Assets inside /product-category/ (e.g. /product-category/steel-door/css/style.css)
+  if (pathname.startsWith('/product-category/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
+    const assetMatch = pathname.match(/\/product-category\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+|webfonts\/[^\/]+)$/);
+    if (assetMatch) {
+      const assetPath = path.join(ROOT_DIR, assetMatch[1]);
+      if (fs.existsSync(assetPath) && !fs.statSync(assetPath).isDirectory()) {
+        const ext = path.extname(assetPath).toLowerCase();
+        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+        res.writeHead(200, { 'Content-Type': contentType });
+        fs.createReadStream(assetPath).pipe(res);
+        return;
+      }
+    }
+  }
+
   // Assets inside /product/ (e.g. /product/./css/style.css, /product/page/2/js/main.js)
   if (pathname.startsWith('/product/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
     const assetMatch = pathname.match(/\/product\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+)$/);
@@ -408,7 +545,7 @@ async function requestDispatcher(req, res) {
 
   // Assets inside /admin/ (e.g. /admin/css/admin.css, /admin/products/page/2/js/admin.js)
   if (pathname.startsWith('/admin/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
-    const assetMatch = pathname.match(/\/admin\/.*?\/(css\/[^\/]+|js\/[^\/]+)$/);
+    const assetMatch = pathname.match(/\/admin\/.*?\/(css\/[^\/]+|js\/[^\/]+|webfonts\/[^\/]+)$/);
     if (assetMatch) {
       const subAssetPath = path.join(ROOT_DIR, 'admin', assetMatch[1]);
       if (fs.existsSync(subAssetPath) && !fs.statSync(subAssetPath).isDirectory()) {
@@ -439,6 +576,17 @@ async function requestDispatcher(req, res) {
   // --- A. Public Catalogue: /product and /product/page/:num ---
   const catalogueMatch = pathname.match(/^\/product(?:\/page(?:\/(\d+))?)?$/i);
   if (catalogueMatch) {
+    const productHtmlPath = path.join(ROOT_DIR, 'product.html');
+    if (fs.existsSync(productHtmlPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      fs.createReadStream(productHtmlPath).pipe(res);
+      return;
+    }
+  }
+
+  // --- B1. Product Category Catalogue: /product-category/:category/ and /product-category/:category/page/:num/ ---
+  const categoryMatch = pathname.match(/^\/product-category\/([a-zA-Z0-9_-]+)(?:\/page\/(\d+))?\/?$/i);
+  if (categoryMatch) {
     const productHtmlPath = path.join(ROOT_DIR, 'product.html');
     if (fs.existsSync(productHtmlPath)) {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -480,12 +628,33 @@ async function requestDispatcher(req, res) {
     }
   }
 
-  // --- D. Admin Dashboard & Subpages: /admin and /admin/:section -> serves admin/index.html ---
-  // Matches /admin, /admin/products, /admin/inquiries, /admin/blogs, /admin/settings, /admin/:section/page/:num
+  // --- D. Admin Authentication & Subpages ---
+  if (pathname.toLowerCase() === '/admin/login') {
+    if (isAuthorized(req)) {
+      res.writeHead(302, { 'Location': '/admin' });
+      res.end();
+      return;
+    }
+    const loginHtmlPath = path.join(ROOT_DIR, 'admin', 'login.html');
+    if (fs.existsSync(loginHtmlPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+      fs.createReadStream(loginHtmlPath).pipe(res);
+      return;
+    }
+  }
+
   const adminMatch = pathname.match(/^\/admin(?:\/([a-zA-Z0-9_-]+))?(?:\/page\/(\d+))?$/i);
   if (adminMatch) {
-    // If it's not a static asset, serve admin/index.html with 200 OK
+    // If it's not a static asset
     if (!/\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
+      // Block unauthenticated access and redirect to /admin/login
+      if (!isAuthorized(req)) {
+        const redirectParam = pathname !== '/admin' ? `?redirect=${encodeURIComponent(pathname + (parsedUrl.search || ''))}` : '';
+        res.writeHead(302, { 'Location': `/admin/login${redirectParam}` });
+        res.end();
+        return;
+      }
+
       const adminIndexHtml = path.join(ROOT_DIR, 'admin', 'index.html');
       if (fs.existsSync(adminIndexHtml)) {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });

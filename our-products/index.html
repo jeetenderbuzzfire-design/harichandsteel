@@ -2,7 +2,14 @@
 <html lang="en">
 
 <head>
-  <base href="/">
+  <script>
+    (function () {
+      var isGithub = window.location.hostname.endsWith('github.io');
+      var repo = window.location.pathname.split('/')[1] || 'harichandsteel';
+      var baseHref = isGithub ? '/' + repo + '/' : '/';
+      document.write('<base href="' + baseHref + '">');
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Our Products - HARICHAND STEEL</title>
@@ -106,15 +113,15 @@
                 Product <i class="fas fa-chevron-down arrow"></i>
               </a>
               <ul class="dropdown-menu">
-                <li><a href="/product-category/aluminum-profile-gate/" class="dropdown-link"><i
+                <li><a href="product-category/aluminum-profile-gate/" class="dropdown-link"><i
                       class="fas fa-angle-right"></i> Aluminum Profile Gate</a></li>
-                <li><a href="/product-category/iron-main-gate/" class="dropdown-link"><i class="fas fa-angle-right"></i>
+                <li><a href="product-category/iron-main-gate/" class="dropdown-link"><i class="fas fa-angle-right"></i>
                     Iron Main Gate</a></li>
-                <li><a href="/product-category/steel-main-gate/" class="dropdown-link"><i class="fas fa-angle-right"></i>
+                <li><a href="product-category/steel-main-gate/" class="dropdown-link"><i class="fas fa-angle-right"></i>
                     Steel Main Gate</a></li>
-                <li><a href="/product-category/steel-door/" class="dropdown-link"><i class="fas fa-angle-right"></i>
+                <li><a href="product-category/steel-door/" class="dropdown-link"><i class="fas fa-angle-right"></i>
                     Steel Door</a></li>
-                <li><a href="/product-category/powder-coated-gates/" class="dropdown-link"><i
+                <li><a href="product-category/powder-coated-gates/" class="dropdown-link"><i
                       class="fas fa-angle-right"></i> Powder Coated Gates</a></li>
               </ul>
             </li>
@@ -176,7 +183,7 @@
               longevity, and effortless automation capability.
             </p>
             <div class="cat-tile-actions">
-              <a href="/product-category/aluminum-profile-gate/" class="btn btn-outline-dark btn-sm">View Models</a>
+              <a href="product-category/aluminum-profile-gate/" class="btn btn-outline-dark btn-sm">View Models</a>
               <a href="https://wa.me/919870433868?text=Enquiry%20for%20Aluminum%20Profile%20Gate"
                 class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Quote</a>
             </div>
@@ -191,7 +198,7 @@
               laser-cut designs with polished mirror or matte finishes.
             </p>
             <div class="cat-tile-actions">
-              <a href="/product-category/steel-main-gate/" class="btn btn-outline-dark btn-sm">View Models</a>
+              <a href="product-category/steel-main-gate/" class="btn btn-outline-dark btn-sm">View Models</a>
               <a href="https://wa.me/919870433868?text=Enquiry%20for%20Steel%20Main%20Gate"
                 class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Quote</a>
             </div>
@@ -206,7 +213,7 @@
               multi-point locking systems and weatherproofing.
             </p>
             <div class="cat-tile-actions">
-              <a href="/product-category/steel-door/" class="btn btn-outline-dark btn-sm">View Models</a>
+              <a href="product-category/steel-door/" class="btn btn-outline-dark btn-sm">View Models</a>
               <a href="https://wa.me/919870433868?text=Enquiry%20for%20Steel%20Doors" class="btn btn-whatsapp btn-sm"
                 target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Quote</a>
             </div>
@@ -251,7 +258,7 @@
               providing exceptional scratch and corrosion resistance.
             </p>
             <div class="cat-tile-actions">
-              <a href="/product-category/powder-coated-gates/" class="btn btn-outline-dark btn-sm">View Models</a>
+              <a href="product-category/powder-coated-gates/" class="btn btn-outline-dark btn-sm">View Models</a>
               <a href="https://wa.me/919870433868?text=Enquiry%20for%20Powder%20Coated%20Gates"
                 class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Quote</a>
             </div>
@@ -295,17 +302,17 @@
           <article class="product-card">
             <div class="product-thumb">
               <span class="product-badge">Rose Gold Pull</span>
-              <a href="/product-category/aluminum-profile-gate/-with-rose-gold-handle">
+              <a href="product-category/aluminum-profile-gate/-with-rose-gold-handle">
                 <img src="../images/prod-2.jpeg" alt="Aluminum Profile Gate With Rose Gold Handle"
                   onerror="this.src='https://harichandsteel.com/wp-content/uploads/2026/02/WhatsApp-Image-2026-02-23-at-1.26.00-PM.jpeg'">
               </a>
             </div>
             <div class="product-body">
               <span class="product-category-link">Aluminum Profile Gate</span>
-              <h4 class="product-title"><a href="/product-category/aluminum-profile-gate/-with-rose-gold-handle">Aluminum
+              <h4 class="product-title"><a href="product-category/aluminum-profile-gate/-with-rose-gold-handle">Aluminum
                   Profile Gate With Rose Gold Handle</a></h4>
               <div class="product-card-ctas">
-                <a href="/product-category/aluminum-profile-gate/-with-rose-gold-handle"
+                <a href="product-category/aluminum-profile-gate/-with-rose-gold-handle"
                   class="btn btn-outline-dark btn-sm">View Details</a>
                 <a href="https://wa.me/919870433868?text=Interested%20in%20Aluminum%20Profile%20Gate%20With%20Rose%20Gold%20Handle"
                   class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i>
@@ -318,17 +325,17 @@
           <article class="product-card">
             <div class="product-thumb">
               <span class="product-badge">Reinforced Frame</span>
-              <a href="/product-category/aluminum-profile-gate/-with-steel-frame">
+              <a href="product-category/aluminum-profile-gate/-with-steel-frame">
                 <img src="../images/prod-3.jpeg" alt="Aluminum Profile Gate With Steel Frame"
                   onerror="this.src='https://harichandsteel.com/wp-content/uploads/2026/02/WhatsApp-Image-2026-02-23-at-1.22.39-PM.jpeg'">
               </a>
             </div>
             <div class="product-body">
               <span class="product-category-link">Aluminum Profile Gate</span>
-              <h4 class="product-title"><a href="/product-category/aluminum-profile-gate/-with-steel-frame">Aluminum Profile
+              <h4 class="product-title"><a href="product-category/aluminum-profile-gate/-with-steel-frame">Aluminum Profile
                   Gate With Steel Frame</a></h4>
               <div class="product-card-ctas">
-                <a href="/product-category/aluminum-profile-gate/-with-steel-frame" class="btn btn-outline-dark btn-sm">View
+                <a href="product-category/aluminum-profile-gate/-with-steel-frame" class="btn btn-outline-dark btn-sm">View
                   Details</a>
                 <a href="https://wa.me/919870433868?text=Interested%20in%20Aluminum%20Profile%20Gate%20With%20Steel%20Frame"
                   class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i>
@@ -412,12 +419,12 @@
           <div class="footer-col">
             <h4>OUR PRODUCTS</h4>
             <div class="footer-links-list">
-              <a href="/product-category/aluminum-profile-gate/"><i class="fas fa-chevron-right"></i> Aluminum Profile
+              <a href="product-category/aluminum-profile-gate/"><i class="fas fa-chevron-right"></i> Aluminum Profile
                 Gate</a>
-              <a href="/product-category/iron-main-gate/"><i class="fas fa-chevron-right"></i> Iron Main Gate</a>
-              <a href="/product-category/steel-main-gate/"><i class="fas fa-chevron-right"></i> Steel Main Gate</a>
-              <a href="/product-category/steel-door/"><i class="fas fa-chevron-right"></i> Steel Door</a>
-              <a href="/product-category/powder-coated-gates/"><i class="fas fa-chevron-right"></i> Powder Coated
+              <a href="product-category/iron-main-gate/"><i class="fas fa-chevron-right"></i> Iron Main Gate</a>
+              <a href="product-category/steel-main-gate/"><i class="fas fa-chevron-right"></i> Steel Main Gate</a>
+              <a href="product-category/steel-door/"><i class="fas fa-chevron-right"></i> Steel Door</a>
+              <a href="product-category/powder-coated-gates/"><i class="fas fa-chevron-right"></i> Powder Coated
                 Gates</a>
               <a href="../product.html"><i class="fas fa-chevron-right"></i> All Products</a>
             </div>

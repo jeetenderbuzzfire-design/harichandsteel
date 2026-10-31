@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="/">
+  <script>
+    (function () {
+      var isGithub = window.location.hostname.endsWith('github.io');
+      var repo = window.location.pathname.split('/')[1] || 'harichandsteel';
+      var baseHref = isGithub ? '/' + repo + '/' : '/';
+      document.write('<base href="' + baseHref + '">');
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=admin/">
   <title>Redirecting to Harichand Steel Admin CMS...</title>

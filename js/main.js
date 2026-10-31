@@ -170,6 +170,9 @@ function initProductFilter() {
 
   if (!filterContainers.length || !cards.length) return;
 
+  // Base URL resolution for GitHub Pages vs Localhost/Production
+  const BASE_PATH = (document.querySelector('base') && document.querySelector('base').getAttribute('href')) || '/';
+
   const PAGE_SIZE = 9;
 
   // Helper: extract page number from clean URL pathname or query parameters
@@ -331,9 +334,9 @@ function initProductFilter() {
       if (isFiltered) {
         if (page > 1) {
           breadcrumbNav.innerHTML = `
-            <a href="/">Home</a>
+            <a href="./">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product/">Product</a>
+            <a href="product/">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <a href="/product-category/${currentFilter}/">${breadcrumbLabel}</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
@@ -512,9 +515,9 @@ function initProductFilter() {
         if (pushHistory && window.history && window.history.pushState) {
           let cleanUrl;
           if (currentFilter && currentFilter !== 'all') {
-            cleanUrl = currentPage > 1 ? `/product-category/${currentFilter}/page/${currentPage}/` : `/product-category/${currentFilter}/`;
+            cleanUrl = currentPage > 1 ? `${BASE_PATH}product-category/${currentFilter}/page/${currentPage}/` : `${BASE_PATH}product-category/${currentFilter}/`;
           } else {
-            cleanUrl = currentPage > 1 ? `/product/page/${currentPage}/` : '/product/';
+            cleanUrl = currentPage > 1 ? `${BASE_PATH}product/page/${currentPage}/` : `${BASE_PATH}product/`;
           }
           try {
             const currentFullPath = window.location.pathname + window.location.search;
@@ -826,7 +829,7 @@ function renderProductCards(grid, products) {
     const safeCat = escapeHtmlSafe(prod.category || 'aluminum-profile-gate');
     const safeCatName = escapeHtmlSafe(prod.categoryName || prod.category_display || 'Aluminum Profile Gate');
     const prodSlug = prod.slug || slugify(prod.title || prod.name || prod.id);
-    const detailUrl = `/product/${prodSlug}/`;
+    const detailUrl = `${BASE_PATH}product/${prodSlug}/`;
     const safeImg = escapeHtmlSafe(prod.image || 'images/prod-1.png');
 
     return `

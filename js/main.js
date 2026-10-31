@@ -331,9 +331,9 @@ function initProductFilter() {
       if (isFiltered) {
         if (page > 1) {
           breadcrumbNav.innerHTML = `
-            <a href="index.html">Home</a>
+            <a href="/">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product">Product</a>
+            <a href="/product/">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <a href="/product-category/${currentFilter}/">${breadcrumbLabel}</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
@@ -342,9 +342,9 @@ function initProductFilter() {
           document.title = `${meta.title} - Page ${page} - HARICHAND STEEL`;
         } else {
           breadcrumbNav.innerHTML = `
-            <a href="index.html">Home</a>
+            <a href="/">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product">Product</a>
+            <a href="/product/">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>${breadcrumbLabel}</span>
           `;
@@ -353,16 +353,16 @@ function initProductFilter() {
       } else {
         if (page > 1) {
           breadcrumbNav.innerHTML = `
-            <a href="index.html">Home</a>
+            <a href="/">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
-            <a href="/product">Product</a>
+            <a href="/product/">Product</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Page ${page}</span>
           `;
           document.title = `Product - Page ${page} - HARICHAND STEEL`;
         } else {
           breadcrumbNav.innerHTML = `
-            <a href="index.html">Home</a>
+            <a href="/">Home</a>
             <span class="sep"><i class="fas fa-chevron-right"></i></span>
             <span>Product</span>
           `;
@@ -390,7 +390,7 @@ function initProductFilter() {
       if (currentFilter && currentFilter !== 'all') {
         prevUrl = page > 2 ? `/product-category/${currentFilter}/page/${page - 1}/` : `/product-category/${currentFilter}/`;
       } else {
-        prevUrl = page > 2 ? `/product/page/${page - 1}` : '/product';
+        prevUrl = page > 2 ? `/product/page/${page - 1}/` : '/product/';
       }
 
       html += `
@@ -408,7 +408,7 @@ function initProductFilter() {
         if (currentFilter && currentFilter !== 'all') {
           pageUrl = p === 1 ? `/product-category/${currentFilter}/` : `/product-category/${currentFilter}/page/${p}/`;
         } else {
-          pageUrl = p === 1 ? '/product' : `/product/page/${p}`;
+          pageUrl = p === 1 ? '/product/' : `/product/page/${p}/`;
         }
         html += `
           <li class="page-item ${isActive ? 'active' : ''}" ${isActive ? 'aria-current="page"' : ''}>
@@ -423,7 +423,7 @@ function initProductFilter() {
       if (currentFilter && currentFilter !== 'all') {
         nextUrl = `/product-category/${currentFilter}/page/${page + 1}/`;
       } else {
-        nextUrl = `/product/page/${page + 1}`;
+        nextUrl = `/product/page/${page + 1}/`;
       }
 
       html += `
@@ -514,7 +514,7 @@ function initProductFilter() {
           if (currentFilter && currentFilter !== 'all') {
             cleanUrl = currentPage > 1 ? `/product-category/${currentFilter}/page/${currentPage}/` : `/product-category/${currentFilter}/`;
           } else {
-            cleanUrl = currentPage > 1 ? `/product/page/${currentPage}` : '/product';
+            cleanUrl = currentPage > 1 ? `/product/page/${currentPage}/` : '/product/';
           }
           try {
             const currentFullPath = window.location.pathname + window.location.search;
@@ -826,7 +826,7 @@ function renderProductCards(grid, products) {
     const safeCat = escapeHtmlSafe(prod.category || 'aluminum-profile-gate');
     const safeCatName = escapeHtmlSafe(prod.categoryName || prod.category_display || 'Aluminum Profile Gate');
     const prodSlug = prod.slug || slugify(prod.title || prod.name || prod.id);
-    const detailUrl = `/product/${prodSlug}`;
+    const detailUrl = `/product/${prodSlug}/`;
     const safeImg = escapeHtmlSafe(prod.image || 'images/prod-1.png');
 
     return `

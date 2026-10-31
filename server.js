@@ -9,6 +9,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const db = require('./db.js');
+const markdownSync = require('./markdown-sync.js');
 
 const PORT = process.env.PORT || 8080;
 const ALT_PORT = 3000;
@@ -160,26 +161,31 @@ async function requestDispatcher(req, res) {
   }
 
   // ==========================================
-  // 1. GLOBAL STRIP TRAILING SLASH MIDDLEWARE (HTTP 301)
-  // If pathname.length > 1 and pathname.endsWith('/'), strip all trailing slashes
-  // and immediately issue an HTTP 301 redirect to the clean URL without a trailing slash.
-  // Example: /admin/products/ -> /admin/products
-  // Example: /product/aluminium-door-profile-gate/ -> /product/aluminium-door-profile-gate
+  // 1. GLOBAL CLEAN URL & TRAILING SLASH MIDDLEWARE (HTTP 301)
+  // Enforces removal of .html and presence of trailing slash for all page URLs.
+  // Example: /about-us.html -> /about-us/
+  // Example: /about-us -> /about-us/
+  // Example: /product/aluminium-door-profile-gate -> /product/aluminium-door-profile-gate/
   // ==========================================
-  // For /product-category/ paths, enforce trailing slash: /product-category/:slug -> /product-category/:slug/
-  if (pathname.startsWith('/product-category/') || pathname === '/product-category') {
-    if (!pathname.endsWith('/')) {
-      const redirectUrl = pathname + '/' + (parsedUrl.search || '') + (parsedUrl.hash || '');
+  const isStaticAsset = /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf|eot|xml)$/i.test(pathname);
+  if (!isStaticAsset && !pathname.startsWith('/api/')) {
+    // A. Strip .html / .htm and redirect with trailing slash (301)
+    if (/\.html?$/i.test(pathname)) {
+      const cleanPath = pathname.replace(/\.html?$/i, '');
+      const redirectTarget = (cleanPath === '/index' || cleanPath === '') ? '/' : `${cleanPath}/`;
+      const redirectUrl = redirectTarget + (parsedUrl.search || '') + (parsedUrl.hash || '');
       res.writeHead(301, { 'Location': redirectUrl });
       res.end();
       return;
     }
-  } else if (pathname.length > 1 && pathname.endsWith('/')) {
-    const cleanPath = pathname.replace(/\/+$/, '');
-    const redirectUrl = cleanPath + (parsedUrl.search || '') + (parsedUrl.hash || '');
-    res.writeHead(301, { 'Location': redirectUrl });
-    res.end();
-    return;
+
+    // B. Enforce trailing slash for all non-root page paths missing trailing slash (301)
+    if (pathname !== '/' && !pathname.endsWith('/')) {
+      const redirectUrl = `${pathname}/` + (parsedUrl.search || '') + (parsedUrl.hash || '');
+      res.writeHead(301, { 'Location': redirectUrl });
+      res.end();
+      return;
+    }
   }
 
   // ==========================================
@@ -297,6 +303,20 @@ async function requestDispatcher(req, res) {
     return sendJson(res, 200, { success: true, message: 'Logged out successfully' });
   }
 
+  // --- /api/markdown/sync ---
+  if (pathname === '/api/markdown/sync') {
+    if (!isAuthorized(req)) {
+      return sendJson(res, 401, { error: 'Unauthorized: Valid x-admin-key or Bearer token required' });
+    }
+    try {
+      const summary = markdownSync.syncAll();
+      sendJson(res, 200, { success: true, message: 'All markdown files synchronized successfully', summary });
+    } catch (e) {
+      sendJson(res, 500, { error: 'Failed to sync markdown files: ' + e.message });
+    }
+    return;
+  }
+
   // --- /api/products ---
   if (pathname === '/api/products') {
     if (req.method === 'GET' || req.method === 'HEAD') {
@@ -352,6 +372,7 @@ async function requestDispatcher(req, res) {
             if (db && typeof db.saveProduct === 'function') {
               try { await db.saveProduct(item); } catch (_) { }
             }
+            try { markdownSync.generateProductMarkdown(item); } catch (_) { }
           }
           fs.writeFileSync(productsFile, JSON.stringify(currentProducts, null, 2), 'utf8');
           sendJson(res, 200, { success: true, count: data.length });
@@ -367,6 +388,7 @@ async function requestDispatcher(req, res) {
           if (db && typeof db.saveProduct === 'function') {
             try { await db.saveProduct(item); } catch (_) { }
           }
+          try { markdownSync.generateProductMarkdown(item); } catch (_) { }
           sendJson(res, 200, { success: true, product: item });
         } else {
           sendJson(res, 400, { error: 'Invalid product payload' });
@@ -388,6 +410,7 @@ async function requestDispatcher(req, res) {
         const id = parsedUrl.searchParams.get('id');
         if (id) {
           await db.deleteProduct(id);
+          try { markdownSync.deleteProductMarkdown(id); } catch (_) { }
           sendJson(res, 200, { success: true, id });
         } else {
           sendJson(res, 400, { error: 'Product ID required' });
@@ -420,10 +443,12 @@ async function requestDispatcher(req, res) {
         if (Array.isArray(data)) {
           for (const item of data) {
             await db.saveBlog(item);
+            try { markdownSync.generateBlogMarkdown(item); } catch (_) { }
           }
           sendJson(res, 200, { success: true, count: data.length });
         } else {
           const saved = await db.saveBlog(data);
+          try { markdownSync.generateBlogMarkdown(saved || data); } catch (_) { }
           sendJson(res, 200, { success: true, blog: saved });
         }
       } catch (e) {
@@ -443,6 +468,7 @@ async function requestDispatcher(req, res) {
         const id = parsedUrl.searchParams.get('id');
         if (id) {
           await db.deleteBlog(id);
+          try { markdownSync.deleteBlogMarkdown(id); } catch (_) { }
           sendJson(res, 200, { success: true, id });
         } else {
           sendJson(res, 400, { error: 'Blog ID required' });
@@ -510,71 +536,52 @@ async function requestDispatcher(req, res) {
   }
 
   // ==========================================
-  // 4. NESTED ASSET SERVING FOR /product/ & /admin/
+  // 4. UNIVERSAL ASSET SERVING (HANDLES ANY PATH DEPTH)
   // ==========================================
+  const isAsset = /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf|eot|xml)$/i.test(pathname);
+  if (isAsset) {
+    // 1. Direct path check from root
+    let assetPath = path.join(ROOT_DIR, pathname.replace(/^\/+/, ''));
+    if (fs.existsSync(assetPath) && !fs.statSync(assetPath).isDirectory()) {
+      const ext = path.extname(assetPath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      if (req.method === 'HEAD') { res.end(); return; }
+      fs.createReadStream(assetPath).pipe(res);
+      return;
+    }
 
-  // Assets inside /product-category/ (e.g. /product-category/steel-door/css/style.css)
-  if (pathname.startsWith('/product-category/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
-    const assetMatch = pathname.match(/\/product-category\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+|webfonts\/[^\/]+)$/);
-    if (assetMatch) {
-      const assetPath = path.join(ROOT_DIR, assetMatch[1]);
-      if (fs.existsSync(assetPath) && !fs.statSync(assetPath).isDirectory()) {
-        const ext = path.extname(assetPath).toLowerCase();
+    // 2. Nested asset extraction from sub-path (e.g. /about-us/css/style.css, /product/category/images/logo.jpeg, /admin/css/admin.css)
+    const subMatch = pathname.match(/(admin\/css\/[^\/]+|admin\/js\/[^\/]+|css\/[^\/]+|js\/[^\/]+|images\/[^\/]+|webfonts\/[^\/]+)$/i);
+    if (subMatch) {
+      const nestedPath = path.join(ROOT_DIR, subMatch[1]);
+      if (fs.existsSync(nestedPath) && !fs.statSync(nestedPath).isDirectory()) {
+        const ext = path.extname(nestedPath).toLowerCase();
         const contentType = MIME_TYPES[ext] || 'application/octet-stream';
         res.writeHead(200, { 'Content-Type': contentType });
-        fs.createReadStream(assetPath).pipe(res);
-        return;
-      }
-    }
-  }
-
-  // Assets inside /product/ (e.g. /product/./css/style.css, /product/page/2/js/main.js)
-  if (pathname.startsWith('/product/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
-    const assetMatch = pathname.match(/\/product\/.*?\/(css\/[^\/]+|js\/[^\/]+|images\/[^\/]+)$/);
-    if (assetMatch) {
-      const assetPath = path.join(ROOT_DIR, assetMatch[1]);
-      if (fs.existsSync(assetPath) && !fs.statSync(assetPath).isDirectory()) {
-        const ext = path.extname(assetPath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-        res.writeHead(200, { 'Content-Type': contentType });
-        fs.createReadStream(assetPath).pipe(res);
-        return;
-      }
-    }
-  }
-
-  // Assets inside /admin/ (e.g. /admin/css/admin.css, /admin/products/page/2/js/admin.js)
-  if (pathname.startsWith('/admin/') && /\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
-    const assetMatch = pathname.match(/\/admin\/.*?\/(css\/[^\/]+|js\/[^\/]+|webfonts\/[^\/]+)$/);
-    if (assetMatch) {
-      const subAssetPath = path.join(ROOT_DIR, 'admin', assetMatch[1]);
-      if (fs.existsSync(subAssetPath) && !fs.statSync(subAssetPath).isDirectory()) {
-        const ext = path.extname(subAssetPath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-        res.writeHead(200, { 'Content-Type': contentType });
-        fs.createReadStream(subAssetPath).pipe(res);
-        return;
-      }
-    }
-    const imageMatch = pathname.match(/\/images\/([^\/]+)$/);
-    if (imageMatch) {
-      const imgPath = path.join(ROOT_DIR, 'images', imageMatch[1]);
-      if (fs.existsSync(imgPath) && !fs.statSync(imgPath).isDirectory()) {
-        const ext = path.extname(imgPath).toLowerCase();
-        const contentType = MIME_TYPES[ext] || 'image/jpeg';
-        res.writeHead(200, { 'Content-Type': contentType });
-        fs.createReadStream(imgPath).pipe(res);
+        if (req.method === 'HEAD') { res.end(); return; }
+        fs.createReadStream(nestedPath).pipe(res);
         return;
       }
     }
   }
 
   // ==========================================
-  // 5. ROUTER ENDPOINTS (STRICT CLEAN URLS WITHOUT TRAILING SLASH)
+  // 6. ROUTER ENDPOINTS (CANONICAL TRAILING-SLASH CLEAN URLS)
   // ==========================================
 
-  // --- A. Public Catalogue: /product and /product/page/:num ---
-  const catalogueMatch = pathname.match(/^\/product(?:\/page(?:\/(\d+))?)?$/i);
+  // --- A. Root Homepage: / ---
+  if (pathname === '/') {
+    const indexHtmlPath = path.join(ROOT_DIR, 'index.html');
+    if (fs.existsSync(indexHtmlPath)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      fs.createReadStream(indexHtmlPath).pipe(res);
+      return;
+    }
+  }
+
+  // --- B. Public Catalogue: /product/ and /product/page/:num/ ---
+  const catalogueMatch = pathname.match(/^\/product\/(?:page\/(\d+)\/)?$/i);
   if (catalogueMatch) {
     const productHtmlPath = path.join(ROOT_DIR, 'product.html');
     if (fs.existsSync(productHtmlPath)) {
@@ -584,8 +591,8 @@ async function requestDispatcher(req, res) {
     }
   }
 
-  // --- B1. Product Category Catalogue: /product-category/:category/ and /product-category/:category/page/:num/ ---
-  const categoryMatch = pathname.match(/^\/product-category\/([a-zA-Z0-9_-]+)(?:\/page\/(\d+))?\/?$/i);
+  // --- C. Product Category Catalogue: /product-category/:category/ and /product-category/:category/page/:num/ ---
+  const categoryMatch = pathname.match(/^\/product-category\/([a-zA-Z0-9_-]+)\/(?:page\/(\d+)\/)?$/i);
   if (categoryMatch) {
     const category = categoryMatch[1].toLowerCase();
     const pageNum = categoryMatch[2] ? parseInt(categoryMatch[2], 10) : 1;
@@ -648,17 +655,17 @@ async function requestDispatcher(req, res) {
 
         // Pre-render breadcrumb navigation
         const breadcrumbHtml = pageNum > 1 ? `
-        <a href="index.html">Home</a>
+        <a href="/">Home</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
-        <a href="/product">Product</a>
+        <a href="/product/">Product</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
         <a href="/product-category/${category}/">${meta.breadcrumb}</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
         <span>Page ${pageNum}</span>
       ` : `
-        <a href="index.html">Home</a>
+        <a href="/">Home</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
-        <a href="/product">Product</a>
+        <a href="/product/">Product</a>
         <span class="sep"><i class="fas fa-chevron-right"></i></span>
         <span>${meta.breadcrumb}</span>
       `;
@@ -680,19 +687,11 @@ async function requestDispatcher(req, res) {
     }
   }
 
-  // --- B. Dynamic Product Slug Page: /product/:slug -> serves product-detail.html ---
-  // Before any static file or fallback check, capture all dynamic product slug paths matching: /^\/product\/([a-zA-Z0-9_-]+)\/?$/i
-  const productSlugMatch = pathname.match(/^\/product\/([a-zA-Z0-9_-]+)\/?$/i);
+  // --- D. Dynamic Product Slug Page: /product/:slug/ -> serves product-detail.html ---
+  const productSlugMatch = pathname.match(/^\/product\/([a-zA-Z0-9_-]+)\/$/i);
   if (productSlugMatch) {
     const slug = productSlugMatch[1];
     if (slug.toLowerCase() !== 'page') {
-      if (pathname.endsWith('/') || (req.url && req.url.split('?')[0].endsWith('/'))) {
-        const cleanPath = `/product/${slug}`;
-        const redirectUrl = cleanPath + (parsedUrl.search || '') + (parsedUrl.hash || '');
-        res.writeHead(301, { 'Location': redirectUrl });
-        res.end();
-        return;
-      }
       const detailHtmlPath = path.join(ROOT_DIR, 'product-detail.html');
       if (fs.existsSync(detailHtmlPath)) {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -702,21 +701,10 @@ async function requestDispatcher(req, res) {
     }
   }
 
-  // --- C. Admin Fallback for Root HTML Articles (e.g. /admin/steel-gate-design.html) ---
-  const adminHtmlMatch = pathname.match(/^\/admin\/([a-zA-Z0-9_.-]+\.html)$/i);
-  if (adminHtmlMatch && !fs.existsSync(path.join(ROOT_DIR, 'admin', adminHtmlMatch[1]))) {
-    const rootHtml = path.join(ROOT_DIR, adminHtmlMatch[1]);
-    if (fs.existsSync(rootHtml)) {
-      res.writeHead(301, { 'Location': `/${adminHtmlMatch[1]}${parsedUrl.search || ''}` });
-      res.end();
-      return;
-    }
-  }
-
-  // --- D. Admin Authentication & Subpages ---
-  if (pathname.toLowerCase() === '/admin/login') {
+  // --- E. Admin Authentication & Subpages: /admin/ and /admin/login/ ---
+  if (pathname.toLowerCase() === '/admin/login/') {
     if (isAuthorized(req)) {
-      res.writeHead(302, { 'Location': '/admin' });
+      res.writeHead(302, { 'Location': '/admin/' });
       res.end();
       return;
     }
@@ -728,73 +716,43 @@ async function requestDispatcher(req, res) {
     }
   }
 
-  const adminMatch = pathname.match(/^\/admin(?:\/([a-zA-Z0-9_-]+))?(?:\/page\/(\d+))?$/i);
-  if (adminMatch) {
-    // If it's not a static asset
-    if (!/\.(css|js|png|jpg|jpeg|svg|ico|webp|json|txt|woff2?|ttf)$/i.test(pathname)) {
-      // Block unauthenticated access and redirect to /admin/login
-      if (!isAuthorized(req)) {
-        const redirectParam = pathname !== '/admin' ? `?redirect=${encodeURIComponent(pathname + (parsedUrl.search || ''))}` : '';
-        res.writeHead(302, { 'Location': `/admin/login${redirectParam}` });
-        res.end();
-        return;
-      }
+  const adminMatch = pathname.match(/^\/admin\/(?:([a-zA-Z0-9_-]+)\/)?(?:page\/(\d+)\/)?$/i);
+  if (adminMatch && !isAsset) {
+    if (!isAuthorized(req)) {
+      const redirectParam = pathname !== '/admin/' ? `?redirect=${encodeURIComponent(pathname + (parsedUrl.search || ''))}` : '';
+      res.writeHead(302, { 'Location': `/admin/login/${redirectParam}` });
+      res.end();
+      return;
+    }
 
-      const adminIndexHtml = path.join(ROOT_DIR, 'admin', 'index.html');
-      if (fs.existsSync(adminIndexHtml)) {
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
-        fs.createReadStream(adminIndexHtml).pipe(res);
-        return;
-      }
+    const adminIndexHtml = path.join(ROOT_DIR, 'admin', 'index.html');
+    if (fs.existsSync(adminIndexHtml)) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+      fs.createReadStream(adminIndexHtml).pipe(res);
+      return;
+    }
+  }
+
+  // --- F. Standard Site Pages: /:pageName/ -> serves :pageName.html or :pageName/index.html ---
+  const sitePageMatch = pathname.match(/^\/([a-zA-Z0-9_-]+)\/$/i);
+  if (sitePageMatch) {
+    const pageName = sitePageMatch[1].toLowerCase();
+    const directHtml = path.join(ROOT_DIR, `${pageName}.html`);
+    const mirrorHtml = path.join(ROOT_DIR, pageName, 'index.html');
+    const targetHtml = fs.existsSync(directHtml) ? directHtml : (fs.existsSync(mirrorHtml) ? mirrorHtml : null);
+
+    if (targetHtml) {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      fs.createReadStream(targetHtml).pipe(res);
+      return;
     }
   }
 
   // ==========================================
-  // 6. STATIC FILE SERVING FALLBACK
+  // 7. 404 NOT FOUND FALLBACK
   // ==========================================
-  let relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
-  let filePath = path.join(ROOT_DIR, relativePath);
-
-  // Security check to prevent directory traversal
-  if (!filePath.startsWith(ROOT_DIR)) {
-    res.writeHead(403, { 'Content-Type': 'text/plain' });
-    res.end('403 Forbidden');
-    return;
-  }
-
-  // Handle clean folder routing (e.g. /product/ -> /product/index.html or /admin/ -> /admin/index.html)
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-    const indexInDir = path.join(filePath, 'index.html');
-    if (fs.existsSync(indexInDir)) {
-      filePath = indexInDir;
-    }
-  }
-
-  // If path doesn't exist, try appending .html
-  if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
-    filePath = filePath + '.html';
-  }
-  if (!fs.existsSync(filePath)) {
-    const trimmedPath = filePath.replace(/[\\\/]+$/, '');
-    if (fs.existsSync(trimmedPath + '.html')) {
-      filePath = trimmedPath + '.html';
-    }
-  }
-
-  // Check file existence
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
-    res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' });
-    res.end(`<!DOCTYPE html><html><head><title>404 Not Found</title></head><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1>404 - Page Not Found</h1><p>The requested file <code>${pathname}</code> does not exist.</p><a href="/" style="color:#d32f2f;">Return to Homepage</a></body></html>`);
-    return;
-  }
-
-  // Stream static file
-  const ext = path.extname(filePath).toLowerCase();
-  const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
-  res.writeHead(200, { 'Content-Type': contentType });
-  const readStream = fs.createReadStream(filePath);
-  readStream.pipe(res);
+  res.writeHead(404, { 'Content-Type': 'text/html; charset=UTF-8' });
+  res.end(`<!DOCTYPE html><html><head><title>404 Not Found</title></head><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1>404 - Page Not Found</h1><p>The requested file <code>${pathname}</code> does not exist.</p><a href="/" style="color:#d32f2f;">Return to Homepage</a></body></html>`);
 }
 
 // Create Main Server
@@ -822,9 +780,13 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(` > Primary Server:  http://0.0.0.0:${PORT}/ (Port ${PORT})`);
   console.log(` > Localhost URL:   http://localhost:${PORT}/`);
   console.log(` > Network / LAN:   http://192.168.88.57:${PORT}/`);
-  console.log(` > CMS Dashboard:   http://localhost:${PORT}/admin`);
-  console.log(` > Products Page:   http://localhost:${PORT}/product`);
-  console.log(` > Single Product:  http://localhost:${PORT}/product/aluminium-door-profile-gate`);
+  console.log(` > CMS Dashboard:   http://localhost:${PORT}/admin/`);
+  console.log(` > Products Page:   http://localhost:${PORT}/product/`);
+  console.log(` > Single Product:  http://localhost:${PORT}/product/aluminium-door-profile-gate/`);
+  try {
+    const mdSummary = markdownSync.syncAll();
+    console.log(` > Markdown Content: ${mdSummary.pages.length} Pages, ${mdSummary.products.length} Products, ${mdSummary.blogs.length} Blogs`);
+  } catch (_) {}
   console.log('----------------------------------------------------------------');
   const dbHost = process.env.DATABASE_URL ? (new URL(process.env.DATABASE_URL.replace(/^postgresql:\/\//i, 'http://')).host || 'Supabase') : 'Local JSON';
   console.log(` Database Target:   ${dbHost}`);

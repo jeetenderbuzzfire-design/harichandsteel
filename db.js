@@ -8,6 +8,11 @@ const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
 
+let markdownSync = null;
+try {
+  markdownSync = require('./markdown-sync.js');
+} catch (_) {}
+
 const ROOT_DIR = __dirname;
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
@@ -376,6 +381,9 @@ module.exports = {
       }
     }
 
+    if (markdownSync && typeof markdownSync.generateProductMarkdown === "function") {
+      try { markdownSync.generateProductMarkdown(product); } catch (_) {}
+    }
     return product;
   },
 
@@ -392,6 +400,9 @@ module.exports = {
       } catch (err) {
         console.error('deleteProduct SQL error:', err.message);
       }
+    }
+    if (markdownSync && typeof markdownSync.deleteProductMarkdown === "function") {
+      try { markdownSync.deleteProductMarkdown(idOrSlug); } catch (_) {}
     }
     return true;
   },
@@ -472,6 +483,9 @@ module.exports = {
       }
     }
 
+    if (markdownSync && typeof markdownSync.generateBlogMarkdown === "function") {
+      try { markdownSync.generateBlogMarkdown(blog); } catch (_) {}
+    }
     return blog;
   },
 
@@ -486,6 +500,9 @@ module.exports = {
       } catch (err) {
         console.error('deleteBlog SQL error:', err.message);
       }
+    }
+    if (markdownSync && typeof markdownSync.deleteBlogMarkdown === "function") {
+      try { markdownSync.deleteBlogMarkdown(idOrSlug); } catch (_) {}
     }
     return true;
   },
